@@ -22,6 +22,7 @@ import java.util.StringJoiner;
 import id.govca.jetpackassignment.pojo.Genre;
 import id.govca.jetpackassignment.pojo.MovieDetail;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
+import id.govca.jetpackassignment.rest.Constants;
 import id.govca.jetpackassignment.viewmodel.MovieViewModel;
 import id.govca.jetpackassignment.viewmodel.TvShowViewModel;
 
@@ -131,6 +132,11 @@ public class DetailActivity extends AppCompatActivity {
         tv_synopsis.setText(movieDetail.getOverview());
         tv_year.setText(movieDetail.getRelease_date());
         ratingBar.setRating((float) movieDetail.getVote_average()/2.0f);
+
+        Glide
+                .with(getBaseContext())
+                .load(Constants.IMAGE_ROOT_LARGE + movieDetail.getPoster_path())
+                .into(imgView_poster);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -149,6 +155,10 @@ public class DetailActivity extends AppCompatActivity {
         tv_year.setText(tvShowDetail.getFirst_air_date());
         ratingBar.setRating((float) tvShowDetail.getVote_average()/2.0f);
 
+        Glide
+                .with(getBaseContext())
+                .load(Constants.IMAGE_ROOT_LARGE + tvShowDetail.getPoster_path())
+                .into(imgView_poster);
     }
 
     private void showLoading(Boolean state) {
