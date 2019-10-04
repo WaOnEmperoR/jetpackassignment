@@ -13,6 +13,8 @@ import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
 import id.govca.jetpackassignment.rest.Constants;
+import id.govca.jetpackassignment.rest.RxObservableSchedulers;
+import id.govca.jetpackassignment.rest.RxSingleSchedulers;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -23,11 +25,17 @@ public class MovieListViewModel extends ViewModel {
     private MutableLiveData<MovieList> listMovies = new MutableLiveData<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
+    private ApiInterface apiInterface;
 
     Context context = GlobalApplication.getAppContext();
 
     public MutableLiveData<MovieList> getListMovies() {
         return listMovies;
+    }
+
+    public MovieListViewModel(ApiInterface apiInterface)
+    {
+        this.apiInterface = apiInterface;
     }
 
     public void setListMovies(String param_lang) {
@@ -39,6 +47,33 @@ public class MovieListViewModel extends ViewModel {
         Log.d(TAG, "Calling Set Search Movies");
         ObserveSearchMovie(query, param_lang);
     }
+
+    public void fetchMovieList()
+    {
+        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
+
+        disposable.add(
+            mApiService.RxGetMovieList(Constants.API_KEY, "en-US")
+                .compose(RxObservableSchedulers.TEST_SCHEDULER.applySchedulers())
+                .subscribe(this::onSuccess,
+                        this::onError)
+
+        );
+    }
+
+    private void onSuccess(MovieList movieList) {
+        listMovies.postValue(movieList);
+    }
+
+    private void onError(Throwable error) {
+        return;
+    }
+
+
+//    private void onLoading()
+//    {
+//        listMovies.postValue(MovieListViewState.LOADING_STATE);
+//    }
 
     private Observable<MovieList> getMovieListObs(String param_lang){
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
