@@ -9,10 +9,12 @@ import androidx.lifecycle.ViewModel;
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import id.govca.jetpackassignment.GlobalApplication;
+import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.pojo.TVShowList;
 import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
 import id.govca.jetpackassignment.rest.Constants;
+import id.govca.jetpackassignment.rest.RxObservableSchedulers;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -30,6 +32,10 @@ public class TvShowListViewModel extends ViewModel {
         return listTvShows;
     }
 
+    public TvShowListViewModel(){
+
+    }
+
     public void setListTvShows(String param_lang) {
         Log.d(TAG, "Calling Set List TV Shows");
         ObserveTVShow(param_lang);
@@ -38,6 +44,27 @@ public class TvShowListViewModel extends ViewModel {
     public void setSearchTVShows(String query, String param_lang){
         Log.d(TAG, "Calling Set Search TV Shows");
         ObserveSearchTVShows(query, param_lang);
+    }
+
+    public void fetchTVShowList()
+    {
+        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
+
+        disposable.add(
+                mApiService.RxGetTVShowList(Constants.API_KEY, "en-US")
+                        .compose(RxObservableSchedulers.TEST_SCHEDULER.applySchedulers())
+                        .subscribe(this::onSuccess,
+                                this::onError)
+
+        );
+    }
+
+    private void onSuccess(TVShowList tvShowList) {
+        listTvShows.postValue(tvShowList);
+    }
+
+    private void onError(Throwable error) {
+        return;
     }
 
     private Observable<TVShowList> getTVShowListObs(String param_lang)

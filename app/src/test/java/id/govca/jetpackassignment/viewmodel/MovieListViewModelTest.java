@@ -41,8 +41,8 @@ import static org.mockito.Mockito.when;
 public class MovieListViewModelTest {
     private MovieListViewModel movieListViewModel;
 
-    @Mock
-    ApiInterface mApiInterface = ApiClient.getClient().create(ApiInterface.class);
+//    @Mock
+//    ApiInterface mApiInterface = ApiClient.getClient().create(ApiInterface.class);
     @Mock
     Observer<MovieList> observer;
     @Mock
