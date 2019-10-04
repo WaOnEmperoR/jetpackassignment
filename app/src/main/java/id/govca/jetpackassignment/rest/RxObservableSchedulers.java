@@ -1,8 +1,6 @@
 package id.govca.jetpackassignment.rest;
 
-import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
-import io.reactivex.SingleTransformer;
 import io.reactivex.schedulers.Schedulers;
 
 public interface RxObservableSchedulers {

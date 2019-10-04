@@ -16,11 +16,15 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+
 import id.govca.jetpackassignment.GlobalApplication;
 import id.govca.jetpackassignment.fragment.MovieFragment;
+import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
@@ -30,6 +34,8 @@ import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class MovieListViewModelTest {
@@ -66,27 +72,25 @@ public class MovieListViewModelTest {
     public void setUp(){
         MockitoAnnotations.initMocks(this);
         lifecycle = new LifecycleRegistry(lifecycleOwner);
-        movieListViewModel = new MovieListViewModel(mApiInterface);
+        movieListViewModel = new MovieListViewModel();
         movieListViewModel.getListMovies().observeForever(observer);
     }
 
     @Test
     public void testNull() {
-        when(mApiInterface.RxGetMovieList(Constants.API_KEY, "en-US")).thenReturn(Observable.just(new MovieList()));
-//        assertNotNull(movieListViewModel.getListMovies().getValue());
         movieListViewModel.fetchMovieList();
-        assertNotNull(movieListViewModel.getListMovies().getValue().getMovieArrayList());
-        assertEquals(20, movieListViewModel.getListMovies().getValue().getMovieArrayList().size());
-//        assertTrue(viewModel.getNewsListState().hasObservers());
+        ArgumentCaptor<MovieList> movieListCaptor = ArgumentCaptor.forClass(MovieList.class);
+
+        verify(observer, times(1)).onChanged(movieListCaptor.capture());
+
+        List<MovieList> capturedMovieList = movieListCaptor.getAllValues();
+        assertNotNull(capturedMovieList.get(0).getMovieArrayList());
+        assertEquals(capturedMovieList.get(0).getMovieArrayList().size(), 20);
+
+//        when(mApiInterface.RxGetMovieList(Constants.API_KEY, "en-US")).thenReturn(null);
+//        movieListViewModel.fetchMovieList();
+//        assertNotNull(movieListViewModel.getListMovies().getValue().getMovieArrayList());
+//        assertEquals(20, movieListViewModel.getListMovies().getValue().getMovieArrayList().size());
     }
 
-//    @Test
-//    public void getListMovies() {
-//        movieListViewModel.setListMovies("en-US");
-//        MutableLiveData<MovieList> movieListMutableLiveData = movieListViewModel.getListMovies();
-//        Log.d("viewModel", String.valueOf(movieListMutableLiveData.getValue().getMovieArrayList().size()));
-//        MovieList movieList = movieListMutableLiveData.getValue();
-//        assertNotNull(movieList);
-//        assertEquals(20, movieList.getMovieArrayList().size());
-//    }
 }

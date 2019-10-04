@@ -25,7 +25,7 @@ public class MovieListViewModel extends ViewModel {
     private MutableLiveData<MovieList> listMovies = new MutableLiveData<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
-    private ApiInterface apiInterface;
+//    private final ApiInterface apiInterface;
 
     Context context = GlobalApplication.getAppContext();
 
@@ -33,9 +33,9 @@ public class MovieListViewModel extends ViewModel {
         return listMovies;
     }
 
-    public MovieListViewModel(ApiInterface apiInterface)
+    public MovieListViewModel()
     {
-        this.apiInterface = apiInterface;
+//        this.apiInterface = apiInterface;
     }
 
     public void setListMovies(String param_lang) {
@@ -68,12 +68,6 @@ public class MovieListViewModel extends ViewModel {
     private void onError(Throwable error) {
         return;
     }
-
-
-//    private void onLoading()
-//    {
-//        listMovies.postValue(MovieListViewState.LOADING_STATE);
-//    }
 
     private Observable<MovieList> getMovieListObs(String param_lang){
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
