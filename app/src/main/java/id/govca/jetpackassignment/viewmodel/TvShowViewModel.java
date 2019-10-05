@@ -13,6 +13,7 @@ import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
 import id.govca.jetpackassignment.rest.Constants;
+import id.govca.jetpackassignment.rest.RxObservableSchedulers;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -30,6 +31,8 @@ public class TvShowViewModel extends ViewModel {
         return tvShowDetailMutableLiveData;
     }
 
+    public TvShowViewModel(){}
+
     public void setTvShowDetail(int id, String param_lang) {
         Log.d(TAG, "Calling Set Movie Detail");
         ObserveTVShowDetail(id, param_lang);
@@ -41,6 +44,25 @@ public class TvShowViewModel extends ViewModel {
         return mApiService.RxTVShowDetails(idThings, Constants.API_KEY, language)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public void fetchTvShowDetail(){
+        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
+
+        disposable.add(
+                mApiService.RxTVShowDetails(456, Constants.API_KEY, "en-US")
+                        .compose(RxObservableSchedulers.TEST_SCHEDULER.applySchedulers())
+                        .subscribe(this::onSuccess,
+                                this::onError)
+        );
+    }
+
+    private void onSuccess(TVShowDetail tvShowDetail){
+        tvShowDetailMutableLiveData.postValue(tvShowDetail);
+    }
+
+    private void onError(Throwable error) {
+        return;
     }
 
     private void ObserveTVShowDetail(int idThings, String param_lang) {

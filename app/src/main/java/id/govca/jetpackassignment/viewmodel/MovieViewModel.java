@@ -10,9 +10,11 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import id.govca.jetpackassignment.GlobalApplication;
 import id.govca.jetpackassignment.pojo.MovieDetail;
+import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
 import id.govca.jetpackassignment.rest.Constants;
+import id.govca.jetpackassignment.rest.RxObservableSchedulers;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -33,6 +35,27 @@ public class MovieViewModel extends ViewModel {
     public void setMovieDetail(int id, String param_lang) {
         Log.d(TAG, "Calling Set Movie Detail");
         ObserveMovieDetail(id, param_lang);
+    }
+
+    public MovieViewModel(){}
+
+    public void fetchMovieDetail(){
+        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
+
+        disposable.add(
+                mApiService.RxMovieDetails(475557, Constants.API_KEY, "en-US")
+                    .compose(RxObservableSchedulers.TEST_SCHEDULER.applySchedulers())
+                    .subscribe(this::onSuccess,
+                            this::onError)
+        );
+    }
+
+    private void onSuccess(MovieDetail movieDetail) {
+        this.movieDetail.postValue(movieDetail);
+    }
+
+    private void onError(Throwable error) {
+        return;
     }
 
     private Observable<MovieDetail> getMovieDetailObs(int idThings, String language){
