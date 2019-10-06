@@ -25,8 +25,10 @@ public class MovieFragmentTest {
     }
 
     @Test
-    public void loadMovies() {
+    public void loadMovies() throws InterruptedException {
         onView(withId(R.id.recyclerView_movie)).check(matches(isDisplayed()));
+        // wait for movie data to be loaded
+        Thread.sleep(5000);
         onView(withId(R.id.recyclerView_movie)).check(new RecyclerViewItemCountAssertion(20));
     }
 
