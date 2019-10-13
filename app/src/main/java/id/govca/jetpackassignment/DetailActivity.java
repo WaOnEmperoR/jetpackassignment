@@ -1,5 +1,6 @@
 package id.govca.jetpackassignment;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -25,6 +26,7 @@ import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.rest.Constants;
 import id.govca.jetpackassignment.viewmodel.MovieViewModel;
 import id.govca.jetpackassignment.viewmodel.TvShowViewModel;
+import id.govca.jetpackassignment.viewmodel.ViewModelFactory;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -43,6 +45,23 @@ public class DetailActivity extends AppCompatActivity {
     private MovieViewModel movieViewModel;
     private TvShowViewModel tvShowViewModel;
 
+    @NonNull
+    private static MovieViewModel obtainMovieViewModel(AppCompatActivity activity) {
+        // Use a Factory to inject dependencies into the ViewModel
+        ViewModelFactory factory = ViewModelFactory.getInstance();
+
+        return ViewModelProviders.of(activity, factory).get(MovieViewModel.class);
+    }
+
+    @NonNull
+    private static TvShowViewModel obtainTvShowViewModel(AppCompatActivity activity) {
+        // Use a Factory to inject dependencies into the ViewModel
+        ViewModelFactory factory = ViewModelFactory.getInstance();
+
+        return ViewModelProviders.of(activity, factory).get(TvShowViewModel.class);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +84,6 @@ public class DetailActivity extends AppCompatActivity {
 
         if (category == 0)
         {
-            movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-            movieViewModel.getMovieDetail().observe(this, getMovieDetail);
-
             Locale current = getResources().getConfiguration().locale;
 
             String param_lang = current.getLanguage() + "-" + current.getCountry();
@@ -76,12 +92,22 @@ public class DetailActivity extends AppCompatActivity {
                 param_lang = "id-ID";
             }
 
-            movieViewModel.setMovieDetail(idThings, param_lang);
+            movieViewModel = obtainMovieViewModel(this);
+
+            movieViewModel.getListMoviesLiveData(param_lang, idThings).observe(this, movieDetail -> {
+                showLoading(false);
+                pseudoAdapterMovie(movieDetail);
+            });
+
+//            movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+//            movieViewModel.getMovieDetail().observe(this, getMovieDetail);
+//
+//            movieViewModel.setMovieDetail(idThings, param_lang);
         }
         else if (category == 1)
         {
-            tvShowViewModel = ViewModelProviders.of(this).get(TvShowViewModel.class);
-            tvShowViewModel.getTvShowDetail().observe(this, getTVShowDetail);
+//            tvShowViewModel = ViewModelProviders.of(this).get(TvShowViewModel.class);
+//            tvShowViewModel.getTvShowDetail().observe(this, getTVShowDetail);
 
             Locale current = getResources().getConfiguration().locale;
 
@@ -91,7 +117,14 @@ public class DetailActivity extends AppCompatActivity {
                 param_lang = "id-ID";
             }
 
-            tvShowViewModel.setTvShowDetail(idThings, param_lang);
+            tvShowViewModel = obtainTvShowViewModel(this);
+
+            tvShowViewModel.getTvShowLiveData(param_lang, idThings).observe(this, tvShowDetail -> {
+                showLoading(false);
+                pseudoAdapterTVShow(tvShowDetail);
+            });
+
+//            tvShowViewModel.setTvShowDetail(idThings, param_lang);
         }
     }
 

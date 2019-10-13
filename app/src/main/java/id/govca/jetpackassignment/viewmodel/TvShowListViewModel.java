@@ -3,13 +3,19 @@ package id.govca.jetpackassignment.viewmodel;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
+import java.util.List;
+
 import id.govca.jetpackassignment.GlobalApplication;
+import id.govca.jetpackassignment.data.source.MovieRepository;
+import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieList;
+import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.pojo.TVShowList;
 import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
@@ -25,6 +31,7 @@ public class TvShowListViewModel extends ViewModel {
     private MutableLiveData<TVShowList> listTvShows = new MutableLiveData<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
+    private MovieRepository movieRepository;
 
     Context context = GlobalApplication.getAppContext();
 
@@ -34,6 +41,15 @@ public class TvShowListViewModel extends ViewModel {
 
     public TvShowListViewModel(){
 
+    }
+
+    public LiveData<List<TVShow>> getListTVShowLiveData(String param_lang){
+        return movieRepository.getAllTVShows(param_lang);
+    }
+
+    public TvShowListViewModel(MovieRepository movieRepository)
+    {
+        this.movieRepository = movieRepository;
     }
 
     public void setListTvShows(String param_lang) {

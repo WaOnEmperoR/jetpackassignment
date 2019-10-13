@@ -3,12 +3,17 @@ package id.govca.jetpackassignment.viewmodel;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
+import java.util.List;
+
 import id.govca.jetpackassignment.GlobalApplication;
+import id.govca.jetpackassignment.data.source.MovieRepository;
+import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
 import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.rest.ApiClient;
@@ -25,6 +30,7 @@ public class MovieViewModel extends ViewModel {
     private MutableLiveData<MovieDetail> movieDetail = new MutableLiveData<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
+    private MovieRepository movieRepository;
 
     Context context = GlobalApplication.getAppContext();
 
@@ -38,6 +44,15 @@ public class MovieViewModel extends ViewModel {
     }
 
     public MovieViewModel(){}
+
+    public LiveData<MovieDetail> getListMoviesLiveData(String param_lang, int movieId){
+        return movieRepository.getMovieDetail(param_lang, movieId);
+    }
+
+    public MovieViewModel(MovieRepository movieRepository)
+    {
+        this.movieRepository = movieRepository;
+    }
 
     public void fetchMovieDetail(){
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);

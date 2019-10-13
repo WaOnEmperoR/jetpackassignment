@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,10 +23,14 @@ import java.util.Locale;
 
 import id.govca.jetpackassignment.DetailActivity;
 import id.govca.jetpackassignment.R;
+import id.govca.jetpackassignment.adapter.ListMovieAdapter;
 import id.govca.jetpackassignment.adapter.ListTvShowAdapter;
+import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.pojo.TVShowList;
+import id.govca.jetpackassignment.viewmodel.MovieListViewModel;
 import id.govca.jetpackassignment.viewmodel.TvShowListViewModel;
+import id.govca.jetpackassignment.viewmodel.ViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,52 +94,67 @@ public class TVShowFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mProgressView = view.findViewById(R.id.progressBarTvShow);
+        rvTvShow = view.findViewById(R.id.recyclerView_tv_show);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (getActivity()!=null)
+        {
+            showLoading(true);
+
+            tvShowListViewModel = obtainViewModel(getActivity());
+            listTvShowAdapter = new ListTvShowAdapter();
+
+            Locale current = getResources().getConfiguration().locale;
+
+            param_lang = current.getLanguage() + "-" + current.getCountry();
+            if (param_lang.equals("in-ID"))
+            {
+                param_lang = "id-ID";
+            }
+
+            tvShowListViewModel.getListTVShowLiveData(param_lang).observe(this, tvShows -> {
+                showLoading(false);
+                listTvShowAdapter.setData(tvShows);
+
+                listTvShowAdapter.setOnItemClickCallback(new ListTvShowAdapter.OnItemClickCallback() {
+                    @Override
+                    public void onItemClicked(TVShow data) {
+                        Log.d(TAG, String.valueOf(data.getId()));
+
+                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+                        intent.putExtra("Movie_ID", data.getId());
+                        intent.putExtra("Category", 1);
+                        startActivity(intent);
+                    }
+                });
+            });
+
+            rvTvShow.setLayoutManager(new LinearLayoutManager(getContext()));
+            rvTvShow.setHasFixedSize(true);
+            rvTvShow.setAdapter(listTvShowAdapter);
+        }
+    }
+
+    @NonNull
+    private static TvShowListViewModel obtainViewModel(FragmentActivity activity) {
+        // Use a Factory to inject dependencies into the ViewModel
+        ViewModelFactory factory = ViewModelFactory.getInstance();
+        return ViewModelProviders.of(activity, factory).get(TvShowListViewModel.class);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tvshow, container, false);
-        mProgressView = view.findViewById(R.id.progressBarTvShow);
-
-        setHasOptionsMenu(true);
-
-        showLoading(true);
-
-        rvTvShow = view.findViewById(R.id.recyclerView_tv_show);
-        rvTvShow.setHasFixedSize(true);
-
-        listTvShowAdapter = new ListTvShowAdapter();
-        listTvShowAdapter.notifyDataSetChanged();
-
-        tvShowListViewModel = ViewModelProviders.of(this).get(TvShowListViewModel.class);
-        tvShowListViewModel.getListTvShows().observe(this, getTvShowList);
-
-        Locale current = getResources().getConfiguration().locale;
-
-        param_lang = current.getLanguage() + "-" + current.getCountry();
-        if (param_lang.equals("in-ID"))
-        {
-            param_lang = "id-ID";
-        }
-
-        tvShowListViewModel.setListTvShows(param_lang);
-
-        rvTvShow.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvTvShow.setAdapter(listTvShowAdapter);
-
-        listTvShowAdapter.setOnItemClickCallback(new ListTvShowAdapter.OnItemClickCallback() {
-            @Override
-            public void onItemClicked(TVShow data) {
-                Log.d(TAG, String.valueOf(data.getId()));
-
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("Movie_ID", data.getId());
-                intent.putExtra("Category", 1);
-                startActivity(intent);
-            }
-        });
-
         return view;
-
     }
 
     private Observer<TVShowList> getTvShowList = new Observer<TVShowList>() {

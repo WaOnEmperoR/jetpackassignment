@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.pojo.TVShow;
@@ -31,6 +32,13 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
     }
 
     public void setData(ArrayList<TVShow> items) {
+        listTvShow.clear();
+        listTvShow.addAll(items);
+        listTvShowBackup.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void setData(List<TVShow> items) {
         listTvShow.clear();
         listTvShow.addAll(items);
         listTvShowBackup.addAll(items);

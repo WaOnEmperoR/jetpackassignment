@@ -3,12 +3,15 @@ package id.govca.jetpackassignment.viewmodel;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import id.govca.jetpackassignment.GlobalApplication;
+import id.govca.jetpackassignment.data.source.MovieRepository;
+import id.govca.jetpackassignment.pojo.MovieDetail;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
@@ -24,6 +27,7 @@ public class TvShowViewModel extends ViewModel {
     private MutableLiveData<TVShowDetail> tvShowDetailMutableLiveData = new MutableLiveData<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
+    private MovieRepository movieRepository;
 
     Context context = GlobalApplication.getAppContext();
 
@@ -32,6 +36,15 @@ public class TvShowViewModel extends ViewModel {
     }
 
     public TvShowViewModel(){}
+
+    public LiveData<TVShowDetail> getTvShowLiveData(String param_lang, int movieId){
+        return movieRepository.getTVShowDetail(param_lang, movieId);
+    }
+
+    public TvShowViewModel(MovieRepository movieRepository)
+    {
+        this.movieRepository = movieRepository;
+    }
 
     public void setTvShowDetail(int id, String param_lang) {
         Log.d(TAG, "Calling Set Movie Detail");
