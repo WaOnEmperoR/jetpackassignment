@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +27,7 @@ import id.govca.jetpackassignment.adapter.ListMovieAdapter;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.viewmodel.MovieListViewModel;
+import id.govca.jetpackassignment.viewmodel.ViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,70 +91,67 @@ public class MovieFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mProgressView = view.findViewById(R.id.progressBarMovie);
+        rvMovies = view.findViewById(R.id.recyclerView_movie);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (getActivity()!=null)
+        {
+            showLoading(true);
+
+            movieListViewModel = obtainViewModel(getActivity());
+            listMovieAdapter = new ListMovieAdapter();
+
+            Locale current = getResources().getConfiguration().locale;
+
+            param_lang = current.getLanguage() + "-" + current.getCountry();
+            if (param_lang.equals("in-ID"))
+            {
+                param_lang = "id-ID";
+            }
+
+            movieListViewModel.getListMoviesLiveData(param_lang).observe(this, movies -> {
+                showLoading(false);
+                listMovieAdapter.setData(movies);
+
+                listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
+                    @Override
+                    public void onItemClicked(Movie data) {
+                        Log.d(TAG, String.valueOf(data.getId()));
+
+                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+                        intent.putExtra("Movie_ID", data.getId());
+                        intent.putExtra("Category", 0);
+                        startActivity(intent);
+                    }
+                });
+            });
+
+            rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
+            rvMovies.setHasFixedSize(true);
+            rvMovies.setAdapter(listMovieAdapter);
+        }
+    }
+
+    @NonNull
+    private static MovieListViewModel obtainViewModel(FragmentActivity activity) {
+        // Use a Factory to inject dependencies into the ViewModel
+        ViewModelFactory factory = ViewModelFactory.getInstance();
+        return ViewModelProviders.of(activity, factory).get(MovieListViewModel.class);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
-        mProgressView = view.findViewById(R.id.progressBarMovie);
-
-        setHasOptionsMenu(true);
-
-        showLoading(true);
-
-        rvMovies = view.findViewById(R.id.recyclerView_movie);
-        rvMovies.setHasFixedSize(true);
-
-        listMovieAdapter = new ListMovieAdapter();
-        listMovieAdapter.notifyDataSetChanged();
-
-        movieListViewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
-        movieListViewModel.getListMovies().observe(this, getMovieList);
-
-        Locale current = getResources().getConfiguration().locale;
-
-        param_lang = current.getLanguage() + "-" + current.getCountry();
-        if (param_lang.equals("in-ID"))
-        {
-            param_lang = "id-ID";
-        }
-
-        movieListViewModel.setListMovies(param_lang);
-
-        rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvMovies.setAdapter(listMovieAdapter);
-
-        listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
-            @Override
-            public void onItemClicked(Movie data) {
-                Log.d(TAG, String.valueOf(data.getId()));
-
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("Movie_ID", data.getId());
-                intent.putExtra("Category", 0);
-                startActivity(intent);
-            }
-        });
-
         return view;
-    }
-
-    private Observer<MovieList> getMovieList = new Observer<MovieList>() {
-        @Override
-        public void onChanged(MovieList movieList) {
-            if (movieList!=null)
-            {
-                Log.d(TAG, "Calling onChange");
-                listMovieAdapter.setData(movieList.getMovieArrayList());
-                showLoading(false);
-            }
-        }
-    };
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

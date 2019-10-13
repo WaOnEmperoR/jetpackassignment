@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.pojo.Movie;
@@ -39,6 +40,13 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
     }
 
     public void setData(ArrayList<Movie> items) {
+        listMovie.clear();
+        listMovie.addAll(items);
+        listMovieBackup.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void setData(List<Movie> items) {
         listMovie.clear();
         listMovie.addAll(items);
         listMovieBackup.addAll(items);

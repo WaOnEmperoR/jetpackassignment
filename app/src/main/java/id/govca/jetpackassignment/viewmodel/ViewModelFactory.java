@@ -6,10 +6,18 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import id.govca.jetpackassignment.data.source.MovieRepository;
 import id.govca.jetpackassignment.di.Injection;
+import id.govca.jetpackassignment.pojo.Movie;
 
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private static volatile ViewModelFactory INSTANCE;
+
+    private MovieRepository mMovieRepository;
+
+    private ViewModelFactory(MovieRepository movieRepository) {
+        mMovieRepository = movieRepository;
+    }
 
     private ViewModelFactory() {
 
@@ -19,7 +27,7 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         if (INSTANCE == null) {
             synchronized (ViewModelFactory.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new ViewModelFactory();
+                    INSTANCE = new ViewModelFactory(Injection.provideRepository());
                 }
             }
         }
@@ -32,7 +40,7 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
         if (modelClass.isAssignableFrom(MovieListViewModel.class)) {
             //noinspection unchecked
-            return (T) new MovieListViewModel();
+            return (T) new MovieListViewModel(mMovieRepository);
         } else if (modelClass.isAssignableFrom(MovieViewModel.class)) {
             //noinspection unchecked
             return (T) new MovieViewModel();
