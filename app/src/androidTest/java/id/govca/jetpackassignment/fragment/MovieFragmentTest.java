@@ -1,11 +1,14 @@
 package id.govca.jetpackassignment.fragment;
 
+import androidx.test.espresso.IdlingRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.testing.SingleFragmentActivity;
 import id.govca.jetpackassignment.utils.RecyclerViewItemCountAssertion;
@@ -22,12 +25,16 @@ public class MovieFragmentTest {
     @Before
     public void setUp() {
         activityRule.getActivity().setFragment(movieFragment);
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.getEspressoIdlingResourcey());
+    }
+
+    @After
+    public void tearDown() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getEspressoIdlingResourcey());
     }
 
     @Test
-    public void loadMovies() throws InterruptedException {
-        // waiting for movies data to be loaded
-        Thread.sleep(5000);
+    public void loadMovies() {
         onView(withId(R.id.recyclerView_movie)).check(matches(isDisplayed()));
         onView(withId(R.id.recyclerView_movie)).check(new RecyclerViewItemCountAssertion(20));
     }

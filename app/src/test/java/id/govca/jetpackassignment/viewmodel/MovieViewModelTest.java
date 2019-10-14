@@ -16,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
 
 import static org.junit.Assert.*;

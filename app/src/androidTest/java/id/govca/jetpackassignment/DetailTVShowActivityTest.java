@@ -3,9 +3,12 @@ package id.govca.jetpackassignment;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.test.espresso.IdlingRegistry;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -28,10 +31,18 @@ public class DetailTVShowActivityTest {
         }
     };
 
+    @Before
+    public void setUp() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.getEspressoIdlingResourcey());
+    }
+
+    @After
+    public void tearDown() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getEspressoIdlingResourcey());
+    }
+
     @Test
-    public void loadMovie() throws InterruptedException {
-        // waiting for tv show data to be loaded
-        Thread.sleep(3000);
+    public void loadMovie() {
         String homepage = "http://www.thesimpsons.com/";
         String overview = "Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general.";
         String first_air_date = "1989-12-17";

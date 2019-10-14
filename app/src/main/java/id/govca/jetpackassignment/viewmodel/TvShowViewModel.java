@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
+import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.GlobalApplication;
 import id.govca.jetpackassignment.data.source.MovieRepository;
 import id.govca.jetpackassignment.pojo.MovieDetail;

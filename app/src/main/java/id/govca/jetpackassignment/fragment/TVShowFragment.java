@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import java.util.Locale;
 
 import id.govca.jetpackassignment.DetailActivity;
+import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.adapter.ListMovieAdapter;
 import id.govca.jetpackassignment.adapter.ListTvShowAdapter;
@@ -103,6 +104,7 @@ public class TVShowFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        EspressoIdlingResource.increment();
 
         if (getActivity()!=null)
         {
@@ -134,6 +136,10 @@ public class TVShowFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
+
+                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                    EspressoIdlingResource.decrement();
+                }
             });
 
             rvTvShow.setLayoutManager(new LinearLayoutManager(getContext()));

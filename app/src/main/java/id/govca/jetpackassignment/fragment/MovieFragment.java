@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import java.util.Locale;
 
 import id.govca.jetpackassignment.DetailActivity;
+import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.adapter.ListMovieAdapter;
 import id.govca.jetpackassignment.pojo.Movie;
@@ -101,6 +102,8 @@ public class MovieFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        EspressoIdlingResource.increment();
+
         if (getActivity()!=null)
         {
             showLoading(true);
@@ -131,6 +134,10 @@ public class MovieFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
+
+                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                    EspressoIdlingResource.decrement();
+                }
             });
 
             rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));

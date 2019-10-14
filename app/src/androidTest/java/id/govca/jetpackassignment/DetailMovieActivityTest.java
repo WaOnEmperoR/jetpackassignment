@@ -3,9 +3,12 @@ package id.govca.jetpackassignment;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.test.espresso.IdlingRegistry;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -31,10 +34,18 @@ public class DetailMovieActivityTest {
         }
     };
 
+    @Before
+    public void setUp() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.getEspressoIdlingResourcey());
+    }
+
+    @After
+    public void tearDown() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getEspressoIdlingResourcey());
+    }
+
     @Test
-    public void loadMovie() throws InterruptedException {
-        // waiting for movie data to be loaded
-        Thread.sleep(3000);
+    public void loadMovie() {
         String release_date = "2019-10-02";
         String overview = "During the 1980s, a failed stand-up comedian is driven insane and turns to a life of crime and chaos in Gotham City while becoming an infamous psychopathic crime figure.";
         String homepage = "http://www.jokermovie.net/";

@@ -84,6 +84,8 @@ public class DetailActivity extends AppCompatActivity {
 
         if (category == 0)
         {
+            EspressoIdlingResource.increment();
+
             Locale current = getResources().getConfiguration().locale;
 
             String param_lang = current.getLanguage() + "-" + current.getCountry();
@@ -97,17 +99,15 @@ public class DetailActivity extends AppCompatActivity {
             movieViewModel.getListMoviesLiveData(param_lang, idThings).observe(this, movieDetail -> {
                 showLoading(false);
                 pseudoAdapterMovie(movieDetail);
-            });
 
-//            movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-//            movieViewModel.getMovieDetail().observe(this, getMovieDetail);
-//
-//            movieViewModel.setMovieDetail(idThings, param_lang);
+                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                    EspressoIdlingResource.decrement();
+                }
+            });
         }
         else if (category == 1)
         {
-//            tvShowViewModel = ViewModelProviders.of(this).get(TvShowViewModel.class);
-//            tvShowViewModel.getTvShowDetail().observe(this, getTVShowDetail);
+            EspressoIdlingResource.increment();
 
             Locale current = getResources().getConfiguration().locale;
 
@@ -122,9 +122,12 @@ public class DetailActivity extends AppCompatActivity {
             tvShowViewModel.getTvShowLiveData(param_lang, idThings).observe(this, tvShowDetail -> {
                 showLoading(false);
                 pseudoAdapterTVShow(tvShowDetail);
+
+                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                    EspressoIdlingResource.decrement();
+                }
             });
 
-//            tvShowViewModel.setTvShowDetail(idThings, param_lang);
         }
     }
 
