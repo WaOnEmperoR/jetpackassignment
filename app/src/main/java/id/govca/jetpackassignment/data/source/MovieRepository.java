@@ -2,21 +2,20 @@ package id.govca.jetpackassignment.data.source;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import id.govca.jetpackassignment.data.source.remote.RemoteRepository;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
 import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.pojo.TVShowList;
-import id.govca.jetpackassignment.rest.ApiClient;
-import id.govca.jetpackassignment.rest.ApiInterface;
-import id.govca.jetpackassignment.rest.Constants;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -30,15 +29,17 @@ public class MovieRepository implements MovieDataSource {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private MovieRepository(){
+    private final RemoteRepository remoteRepository;
 
+    private MovieRepository(@NonNull RemoteRepository remoteRepository){
+        this.remoteRepository = remoteRepository;
     }
 
-    public static MovieRepository getInstance(){
+    public static MovieRepository getInstance( RemoteRepository remoteData){
         if (INSTANCE == null) {
             synchronized (MovieRepository.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new MovieRepository();
+                    INSTANCE = new MovieRepository(remoteData);
                 }
             }
         }
@@ -47,10 +48,9 @@ public class MovieRepository implements MovieDataSource {
 
     @Override
     public LiveData<List<Movie>> getAllMovies(String param_lang) {
-        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
         MutableLiveData<List<Movie>> movieList = new MutableLiveData<>();
 
-        mApiService.RxGetMovieList(Constants.API_KEY, param_lang)
+        remoteRepository.getMovieList(param_lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<MovieList, ArrayList<Movie>>() {
@@ -87,10 +87,9 @@ public class MovieRepository implements MovieDataSource {
 
     @Override
     public LiveData<MovieDetail> getMovieDetail(String param_lang, int movieId) {
-        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
         MutableLiveData<MovieDetail> myMovieDetail = new MutableLiveData<>();
 
-        mApiService.RxMovieDetails(movieId, Constants.API_KEY, param_lang)
+        remoteRepository.getMovieDetail(movieId, param_lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<MovieDetail>() {
@@ -115,10 +114,9 @@ public class MovieRepository implements MovieDataSource {
 
     @Override
     public LiveData<List<TVShow>> getAllTVShows(String param_lang) {
-        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
         MutableLiveData<List<TVShow>> tvShowList = new MutableLiveData<>();
 
-        mApiService.RxGetTVShowList(Constants.API_KEY, param_lang)
+        remoteRepository.getTVShowList(param_lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<TVShowList, ArrayList<TVShow>>() {
@@ -149,10 +147,9 @@ public class MovieRepository implements MovieDataSource {
 
     @Override
     public LiveData<TVShowDetail> getTVShowDetail(String param_lang, int tvShowId) {
-        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
         MutableLiveData<TVShowDetail> tvShowDetailMutableLiveData = new MutableLiveData<>();
 
-        mApiService.RxTVShowDetails(tvShowId, Constants.API_KEY, param_lang)
+        remoteRepository.getTVShowDetail(tvShowId, param_lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<TVShowDetail>() {
