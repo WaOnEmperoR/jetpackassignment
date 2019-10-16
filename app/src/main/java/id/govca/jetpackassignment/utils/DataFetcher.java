@@ -27,6 +27,9 @@ public class DataFetcher {
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
         final ArrayList<Movie> movieArrayList = new ArrayList<Movie>();
 
+        Movie movie = new Movie();
+        movie.setOverview("10");
+
         mApiService.RxGetMovieList(Constants.API_KEY, param_lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
