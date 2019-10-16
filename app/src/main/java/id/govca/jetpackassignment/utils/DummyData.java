@@ -3,6 +3,7 @@ package id.govca.jetpackassignment.utils;
 import java.util.ArrayList;
 
 import id.govca.jetpackassignment.pojo.Movie;
+import id.govca.jetpackassignment.pojo.TVShow;
 
 public class DummyData {
 
@@ -50,5 +51,38 @@ public class DummyData {
         movies.add(movie);
 
         return movies;
+    }
+
+    public static ArrayList<TVShow> generateDummyTVShows(){
+        ArrayList<TVShow> tvShows = new ArrayList<>();
+
+        TVShow tvShow = new TVShow();
+
+        tvShow.setName("Fear the Walking Dead");
+        tvShow.setFirst_air_date("2015-08-23");
+        tvShow.setOverview("What did the world look like as it was transforming into the horrifying apocalypse depicted in \"The Walking Dead\"? This spin-off set in Los Angeles, following new characters as they face the beginning of the end of the world, will answer that question.");
+        tvShow.setId(62286);
+        tvShow.setPopularity(452.849);
+        tvShow.setVote_average(6.3);
+        tvShows.add(tvShow);
+        //===================================
+        tvShow.setName("Batwoman");
+        tvShow.setFirst_air_date("2019-10-06");
+        tvShow.setOverview("Armed with a great passion for social justice and with a great facility to always say what she thinks, Kate Kane is known in the streets of Gotham as Batwoman, a lesbian highly trained to fight crime that resurfaces in the city. However, before becoming a savior, she must fight the demons that prevent her from being the symbol of the hope of a corrupt city.");
+        tvShow.setId(89247);
+        tvShow.setPopularity(298.277);
+        tvShow.setVote_average(6.9);
+        tvShows.add(tvShow);
+        //===================================
+        tvShow.setName("Arrow");
+        tvShow.setFirst_air_date("2012-10-10");
+        tvShow.setOverview("Spoiled billionaire playboy Oliver Queen is missing and presumed dead when his yacht is lost at sea. He returns five years later a changed man, determined to clean up the city as a hooded vigilante armed with a bow.");
+        tvShow.setId(1412);
+        tvShow.setPopularity(332.397);
+        tvShow.setVote_average(5.8);
+        tvShows.add(tvShow);
+
+        return tvShows;
+
     }
 }
