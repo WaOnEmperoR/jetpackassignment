@@ -9,6 +9,10 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.govca.jetpackassignment.data.NetworkBoundResource;
+import id.govca.jetpackassignment.data.source.local.LocalRepository;
+import id.govca.jetpackassignment.data.source.local.entity.Favorite;
+import id.govca.jetpackassignment.data.source.remote.ApiResponse;
 import id.govca.jetpackassignment.data.source.remote.RemoteRepository;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
@@ -16,6 +20,8 @@ import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.pojo.TVShowList;
+import id.govca.jetpackassignment.utils.AppExecutors;
+import id.govca.jetpackassignment.vo.Resource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -30,16 +36,20 @@ public class MovieRepository implements MovieDataSource {
     private final String TAG = this.getClass().getSimpleName();
 
     private final RemoteRepository remoteRepository;
+    private final LocalRepository localRepository;
+    private final AppExecutors appExecutors;
 
-    private MovieRepository(@NonNull RemoteRepository remoteRepository){
+    private MovieRepository(@NonNull RemoteRepository remoteRepository, @NonNull LocalRepository localRepository, AppExecutors appExecutors){
         this.remoteRepository = remoteRepository;
+        this.localRepository = localRepository;
+        this.appExecutors = appExecutors;
     }
 
-    public static MovieRepository getInstance( RemoteRepository remoteData){
+    public static MovieRepository getInstance( RemoteRepository remoteData, LocalRepository localData, AppExecutors appExecutors){
         if (INSTANCE == null) {
             synchronized (MovieRepository.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new MovieRepository(remoteData);
+                    INSTANCE = new MovieRepository(remoteData, localData, appExecutors);
                 }
             }
         }
@@ -170,5 +180,50 @@ public class MovieRepository implements MovieDataSource {
                 });
 
         return tvShowDetailMutableLiveData;
+    }
+
+    @Override
+    public LiveData<Resource<List<Favorite>>> getFavorites(int type) {
+        return new NetworkBoundResource<List<Favorite>, List<Favorite>>(appExecutors) {
+            @Override
+            protected LiveData<List<Favorite>> loadFromDB() {
+                return localRepository.getFavorites(type);
+            }
+
+            @Override
+            protected Boolean shouldFetch(List<Favorite> data) {
+                return false;
+            }
+
+            @Override
+            protected LiveData<ApiResponse<List<Favorite>>> createCall() {
+                return null;
+            }
+
+            @Override
+            protected void saveCallResult(List<Favorite> data) {
+
+            }
+        }.asLiveData();
+    }
+
+    @Override
+    public LiveData<Resource<Favorite>> getFavoriteDetail(int type, int id) {
+        return null;
+    }
+
+    @Override
+    public int checkFavorite(int type, int thingsId) {
+        return 0;
+    }
+
+    @Override
+    public void deleteFavorite(int type, int thingsId) {
+
+    }
+
+    @Override
+    public Long insertFavorite(Favorite favorite) {
+        return null;
     }
 }

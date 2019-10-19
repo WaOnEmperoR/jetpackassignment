@@ -48,7 +48,7 @@ public class DetailActivity extends AppCompatActivity {
     @NonNull
     private static MovieViewModel obtainMovieViewModel(AppCompatActivity activity) {
         // Use a Factory to inject dependencies into the ViewModel
-        ViewModelFactory factory = ViewModelFactory.getInstance();
+        ViewModelFactory factory = ViewModelFactory.getInstance(activity.getApplication());
 
         return ViewModelProviders.of(activity, factory).get(MovieViewModel.class);
     }
@@ -56,7 +56,7 @@ public class DetailActivity extends AppCompatActivity {
     @NonNull
     private static TvShowViewModel obtainTvShowViewModel(AppCompatActivity activity) {
         // Use a Factory to inject dependencies into the ViewModel
-        ViewModelFactory factory = ViewModelFactory.getInstance();
+        ViewModelFactory factory = ViewModelFactory.getInstance(activity.getApplication());
 
         return ViewModelProviders.of(activity, factory).get(TvShowViewModel.class);
     }

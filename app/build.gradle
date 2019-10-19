@@ -71,10 +71,13 @@ dependencies {
     // mockito unit testing
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.0.0'
 
-
     // idling resource
     implementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
+
+    // room
+    implementation "androidx.room:room-runtime:2.1.0"
+    annotationProcessor "androidx.room:room-compiler:2.1.0"
 
     implementation 'com.android.support:multidex:1.0.3'
 }

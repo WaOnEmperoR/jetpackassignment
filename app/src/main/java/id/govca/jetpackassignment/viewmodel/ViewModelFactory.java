@@ -1,5 +1,7 @@
 package id.govca.jetpackassignment.viewmodel;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,11 +18,11 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         mMovieRepository = movieRepository;
     }
 
-    public static ViewModelFactory getInstance() {
+    public static ViewModelFactory getInstance(Application application) {
         if (INSTANCE == null) {
             synchronized (ViewModelFactory.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new ViewModelFactory(Injection.provideRepository());
+                    INSTANCE = new ViewModelFactory(Injection.provideRepository(application));
                 }
             }
         }
