@@ -3,6 +3,7 @@
 
     <string name="title_movie">Movie</string>
     <string name="title_tv_show">TV Show</string>
+    <string name="title_favorite">Favorite</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 
@@ -12,4 +13,7 @@
     <string name="title_detail">Movie/TV Show Information</string>
     <string name="title_genres">Genres</string>
     <string name="title_homepage">Homepage</string>
+    <string name="hello_blank_fragment">Hello Blank Fragment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
 </resources>

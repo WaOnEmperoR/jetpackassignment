@@ -8,11 +8,14 @@ import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
 
+import id.govca.jetpackassignment.fragment.FavoriteFragment;
 import id.govca.jetpackassignment.fragment.MovieFragment;
 import id.govca.jetpackassignment.fragment.TVShowFragment;
+import id.govca.jetpackassignment.fragment.favorite.FavoriteMovieFragment;
+import id.govca.jetpackassignment.fragment.favorite.FavoriteTVShowFragment;
 import id.govca.jetpackassignment.helper.TabsAdapter;
 
-public class MainActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener, FavoriteFragment.OnFragmentInteractionListener, FavoriteTVShowFragment.OnFragmentInteractionListener, FavoriteMovieFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

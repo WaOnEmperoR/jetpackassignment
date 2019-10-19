@@ -35,5 +35,11 @@
             android:icon="@drawable/ic_iconfinder_23_2135798"
             android:text="@string/title_tv_show" />
 
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_action_name"
+            android:text="@string/title_favorite" />
+
     </com.google.android.material.tabs.TabLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

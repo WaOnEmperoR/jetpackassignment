@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import id.govca.jetpackassignment.fragment.FavoriteFragment;
 import id.govca.jetpackassignment.fragment.MovieFragment;
 import id.govca.jetpackassignment.fragment.TVShowFragment;
 
@@ -23,6 +24,9 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
             case 1:
                 TVShowFragment tvShow = new TVShowFragment();
                 return tvShow;
+            case 2:
+                FavoriteFragment favoriteFragment = new FavoriteFragment();
+                return favoriteFragment;
             default:
                 return null;
         }
