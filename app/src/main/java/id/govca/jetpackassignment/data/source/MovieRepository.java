@@ -89,7 +89,7 @@ public class MovieRepository implements MovieDataSource {
 
                     @Override
                     public void onComplete() {
-                        Log.e(TAG, "onComplete");
+                        Log.d(TAG, "onComplete");
                         return;
                     }
                 });
