@@ -1,5 +1,7 @@
 package id.govca.jetpackassignment.data.source;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
@@ -20,13 +22,13 @@ public interface MovieDataSource {
 
     LiveData<TVShowDetail> getTVShowDetail(String param_lang, int tvShowId);
 
-    LiveData<Resource<List<Favorite>>> getFavorites(int type);
+    LiveData<List<Favorite>> getFavorites(int type, Context context);
 
-    LiveData<Resource<Favorite>> getFavoriteDetail(int type, int id);
+    LiveData<Favorite> getFavoriteDetail(int type, int id, Context context);
 
-    int checkFavorite(int type, int thingsId);
+    LiveData<Integer> checkFavorite(int type, int thingsId, Context context);
 
-    void deleteFavorite(int type, int thingsId);
+    LiveData<Void> deleteFavorite(int type, int thingsId, Context context);
 
-    Long insertFavorite(Favorite favorite);
+    LiveData<Long> insertFavorite(Favorite favorite, Context context);
 }

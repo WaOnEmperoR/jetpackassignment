@@ -21,6 +21,7 @@ import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
 import id.govca.jetpackassignment.rest.Constants;
 import id.govca.jetpackassignment.rest.RxObservableSchedulers;
+import id.govca.jetpackassignment.vo.Resource;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

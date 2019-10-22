@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide;
 import java.util.Locale;
 import java.util.StringJoiner;
 
+import id.govca.jetpackassignment.data.source.local.entity.Favorite;
 import id.govca.jetpackassignment.pojo.Genre;
 import id.govca.jetpackassignment.pojo.MovieDetail;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
@@ -40,10 +42,13 @@ public class DetailActivity extends AppCompatActivity {
 
     private RatingBar ratingBar;
 
+    private Switch favoriteSwitch;
+
     Context context = GlobalApplication.getAppContext();
 
     private MovieViewModel movieViewModel;
     private TvShowViewModel tvShowViewModel;
+    private Favorite favorite = new Favorite();
 
     @NonNull
     private static MovieViewModel obtainMovieViewModel(AppCompatActivity activity) {
@@ -81,6 +86,7 @@ public class DetailActivity extends AppCompatActivity {
         tv_year = findViewById(R.id.tv_movie_year_content);
         tv_synopsis = findViewById(R.id.tv_movie_synopsis_content);
         imgView_poster = findViewById(R.id.imgView_poster);
+        favoriteSwitch = findViewById(R.id.switch_favorite);
 
         if (category == 0)
         {
@@ -169,6 +175,26 @@ public class DetailActivity extends AppCompatActivity {
         tv_year.setText(movieDetail.getRelease_date());
         ratingBar.setRating((float) movieDetail.getVote_average()/2.0f);
 
+        favorite.setDate_available(movieDetail.getRelease_date());
+        favorite.setHomepage(movieDetail.getHomepage());
+        favorite.setThingsId(movieDetail.getId());
+        favorite.setType(0);
+        favorite.setPoster_path(movieDetail.getPoster_path());
+        favorite.setTitle(movieDetail.getOriginal_title());
+        favorite.setVote_average(movieDetail.getVote_average());
+        favorite.setSynopsis(movieDetail.getOverview());
+
+        Integer intKu = movieViewModel.checkFavoriteMovie(movieDetail.getId());
+
+//        if (intKu.equals(0))
+//        {
+//            favoriteSwitch.setChecked(false);
+//        }
+//        else
+//        {
+//            favoriteSwitch.setChecked(true);
+//        }
+
         Glide
                 .with(getBaseContext())
                 .load(Constants.IMAGE_ROOT_LARGE + movieDetail.getPoster_path())
@@ -190,6 +216,15 @@ public class DetailActivity extends AppCompatActivity {
         tv_synopsis.setText(tvShowDetail.getOverview());
         tv_year.setText(tvShowDetail.getFirst_air_date());
         ratingBar.setRating((float) tvShowDetail.getVote_average()/2.0f);
+
+        favorite.setTitle(tvShowDetail.getName());
+        favorite.setPoster_path(tvShowDetail.getPoster_path());
+        favorite.setVote_average(tvShowDetail.getVote_average());
+        favorite.setType(1);
+        favorite.setThingsId(tvShowDetail.getId());
+        favorite.setHomepage(tvShowDetail.getHomepage());
+        favorite.setDate_available(tvShowDetail.getFirst_air_date());
+        favorite.setSynopsis(tvShowDetail.getOverview());
 
         Glide
                 .with(getBaseContext())

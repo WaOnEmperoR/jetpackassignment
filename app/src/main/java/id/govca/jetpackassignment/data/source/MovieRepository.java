@@ -1,5 +1,6 @@
 package id.govca.jetpackassignment.data.source;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.govca.jetpackassignment.GlobalApplication;
 import id.govca.jetpackassignment.data.NetworkBoundResource;
 import id.govca.jetpackassignment.data.source.local.LocalRepository;
 import id.govca.jetpackassignment.data.source.local.entity.Favorite;
@@ -183,47 +185,137 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public LiveData<Resource<List<Favorite>>> getFavorites(int type) {
-        return new NetworkBoundResource<List<Favorite>, List<Favorite>>(appExecutors) {
-            @Override
-            protected LiveData<List<Favorite>> loadFromDB() {
-                return localRepository.getFavorites(type);
-            }
+    public LiveData<List<Favorite>> getFavorites(int type, Context context) {
+        MutableLiveData<List<Favorite>> favoritesMutableLiveData = new MutableLiveData<>();
 
-            @Override
-            protected Boolean shouldFetch(List<Favorite> data) {
-                return false;
-            }
+        localRepository.getFavorites(type, context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<Favorite>>() {
+                    @Override
+                    public void onNext(List<Favorite> favorites) {
+                        favoritesMutableLiveData.postValue(favorites);
+                    }
 
-            @Override
-            protected LiveData<ApiResponse<List<Favorite>>> createCall() {
-                return null;
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage());
+                    }
 
-            @Override
-            protected void saveCallResult(List<Favorite> data) {
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete");
+                    }
+                });
 
-            }
-        }.asLiveData();
+        return favoritesMutableLiveData;
     }
 
     @Override
-    public LiveData<Resource<Favorite>> getFavoriteDetail(int type, int id) {
-        return null;
+    public LiveData<Favorite> getFavoriteDetail(int type, int id, Context context) {
+        MutableLiveData<Favorite> favoriteMutableLiveData = new MutableLiveData<>();
+
+        localRepository.getFavoriteDetail(type, id, context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Favorite>() {
+                    @Override
+                    public void onNext(Favorite favorite) {
+                        favoriteMutableLiveData.postValue(favorite);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete");
+                    }
+                });
+
+        return favoriteMutableLiveData;
     }
 
     @Override
-    public int checkFavorite(int type, int thingsId) {
-        return 0;
+    public LiveData<Integer> checkFavorite(int type, int thingsId, Context context) {
+        MutableLiveData<Integer> favoriteMutableLiveData = new MutableLiveData<>();
+
+        localRepository.checkFavorite(type, thingsId, context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Integer>() {
+                    @Override
+                    public void onNext(Integer integer) {
+                        favoriteMutableLiveData.postValue(integer);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete");
+                    }
+                });
+
+        return favoriteMutableLiveData;
     }
 
     @Override
-    public void deleteFavorite(int type, int thingsId) {
+    public LiveData<Void> deleteFavorite(int type, int thingsId, Context context) {
+        MutableLiveData<Void> favoriteMutableLiveData = new MutableLiveData<>();
 
+        localRepository.deleteFavorite(type, thingsId, context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Void>() {
+                    @Override
+                    public void onNext(Void myVoid) {
+                        favoriteMutableLiveData.postValue(myVoid);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete");
+                    }
+                });
+
+        return favoriteMutableLiveData;
     }
 
     @Override
-    public Long insertFavorite(Favorite favorite) {
-        return null;
+    public LiveData<Long> insertFavorite(Favorite favorite, Context context) {
+        MutableLiveData<Long> favoriteMutableLiveData = new MutableLiveData<>();
+
+        localRepository.insertFavorite(favorite, context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Long>() {
+                    @Override
+                    public void onNext(Long myLong) {
+                        favoriteMutableLiveData.postValue(myLong);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete");
+                    }
+                });
+
+        return favoriteMutableLiveData;
     }
 }
