@@ -46,6 +46,14 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             //noinspection unchecked
             return (T) new TvShowViewModel(mMovieRepository);
         }
+        else if (modelClass.isAssignableFrom(FavoriteListViewModel.class)) {
+            //noinspection unchecked
+            return (T) new FavoriteListViewModel(mMovieRepository);
+        }
+        else if (modelClass.isAssignableFrom(FavoriteViewModel.class)) {
+            //noinspection unchecked
+            return (T) new FavoriteViewModel(mMovieRepository);
+        }
 
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

@@ -28,7 +28,7 @@ public interface MovieDataSource {
 
     LiveData<Integer> checkFavorite(int type, int thingsId, Context context);
 
-    LiveData<Void> deleteFavorite(int type, int thingsId, Context context);
+    LiveData<Integer> deleteFavorite(int type, int thingsId, Context context);
 
     LiveData<Long> insertFavorite(Favorite favorite, Context context);
 }

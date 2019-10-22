@@ -26,6 +26,7 @@ import id.govca.jetpackassignment.pojo.Genre;
 import id.govca.jetpackassignment.pojo.MovieDetail;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.rest.Constants;
+import id.govca.jetpackassignment.viewmodel.FavoriteViewModel;
 import id.govca.jetpackassignment.viewmodel.MovieViewModel;
 import id.govca.jetpackassignment.viewmodel.TvShowViewModel;
 import id.govca.jetpackassignment.viewmodel.ViewModelFactory;
@@ -48,6 +49,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private MovieViewModel movieViewModel;
     private TvShowViewModel tvShowViewModel;
+    private FavoriteViewModel favoriteViewModel;
     private Favorite favorite = new Favorite();
 
     @NonNull
@@ -64,6 +66,14 @@ public class DetailActivity extends AppCompatActivity {
         ViewModelFactory factory = ViewModelFactory.getInstance(activity.getApplication());
 
         return ViewModelProviders.of(activity, factory).get(TvShowViewModel.class);
+    }
+
+    @NonNull
+    private static FavoriteViewModel obtainFavoriteViewModel(AppCompatActivity activity) {
+        // Use a Factory to inject dependencies into the ViewModel
+        ViewModelFactory factory = ViewModelFactory.getInstance(activity.getApplication());
+
+        return ViewModelProviders.of(activity, factory).get(FavoriteViewModel.class);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -133,32 +143,8 @@ public class DetailActivity extends AppCompatActivity {
                     EspressoIdlingResource.decrement();
                 }
             });
-
         }
     }
-
-    private Observer<MovieDetail> getMovieDetail = new Observer<MovieDetail>() {
-        @RequiresApi(api = Build.VERSION_CODES.N)
-        @Override
-        public void onChanged(MovieDetail movieDetail) {
-            if (movieDetail!=null){
-                pseudoAdapterMovie(movieDetail);
-                showLoading(false);
-            }
-        }
-    };
-
-    private Observer<TVShowDetail> getTVShowDetail = new Observer<TVShowDetail>() {
-        @RequiresApi(api = Build.VERSION_CODES.N)
-        @Override
-        public void onChanged(TVShowDetail tvShowDetail) {
-            if (tvShowDetail != null)
-            {
-                pseudoAdapterTVShow(tvShowDetail);
-                showLoading(false);
-            }
-        }
-    };
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void pseudoAdapterMovie(final MovieDetail movieDetail){
@@ -184,16 +170,16 @@ public class DetailActivity extends AppCompatActivity {
         favorite.setVote_average(movieDetail.getVote_average());
         favorite.setSynopsis(movieDetail.getOverview());
 
-        Integer intKu = movieViewModel.checkFavoriteMovie(movieDetail.getId());
-
-//        if (intKu.equals(0))
-//        {
-//            favoriteSwitch.setChecked(false);
-//        }
-//        else
-//        {
-//            favoriteSwitch.setChecked(true);
-//        }
+        favoriteViewModel = obtainFavoriteViewModel(this);
+        favoriteViewModel.checkFavorite(0, movieDetail.getId(), this).observe(this, checkInteger -> {
+            if (checkInteger.equals(0)){
+                favoriteSwitch.setChecked(false);
+            }
+            else
+            {
+                favoriteSwitch.setChecked(true);
+            }
+        });
 
         Glide
                 .with(getBaseContext())
@@ -225,6 +211,17 @@ public class DetailActivity extends AppCompatActivity {
         favorite.setHomepage(tvShowDetail.getHomepage());
         favorite.setDate_available(tvShowDetail.getFirst_air_date());
         favorite.setSynopsis(tvShowDetail.getOverview());
+
+        favoriteViewModel = obtainFavoriteViewModel(this);
+        favoriteViewModel.checkFavorite(1, tvShowDetail.getId(), this).observe(this, checkInteger -> {
+            if (checkInteger.equals(0)){
+                favoriteSwitch.setChecked(false);
+            }
+            else
+            {
+                favoriteSwitch.setChecked(true);
+            }
+        });
 
         Glide
                 .with(getBaseContext())

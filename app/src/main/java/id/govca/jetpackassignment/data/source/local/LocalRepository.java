@@ -63,11 +63,11 @@ public class LocalRepository {
         });
     }
 
-    public Observable<Void> deleteFavorite(int type, int id, Context localContext)
+    public Observable<Integer> deleteFavorite(int type, int id, Context localContext)
     {
-        return Observable.fromCallable(new Callable<Void>() {
+        return Observable.fromCallable(new Callable<Integer>() {
             @Override
-            public Void call() throws Exception {
+            public Integer call() {
                 return FavoriteDatabase.getInstance(localContext)
                         .favoriteDao()
                         .deleteFavorite(type, id);

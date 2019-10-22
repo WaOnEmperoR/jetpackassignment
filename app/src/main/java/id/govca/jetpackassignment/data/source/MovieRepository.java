@@ -266,16 +266,16 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public LiveData<Void> deleteFavorite(int type, int thingsId, Context context) {
-        MutableLiveData<Void> favoriteMutableLiveData = new MutableLiveData<>();
+    public LiveData<Integer> deleteFavorite(int type, int thingsId, Context context) {
+        MutableLiveData<Integer> favoriteMutableLiveData = new MutableLiveData<>();
 
         localRepository.deleteFavorite(type, thingsId, context)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<Void>() {
+                .subscribeWith(new DisposableObserver<Integer>() {
                     @Override
-                    public void onNext(Void myVoid) {
-                        favoriteMutableLiveData.postValue(myVoid);
+                    public void onNext(Integer integer) {
+                        favoriteMutableLiveData.postValue(integer);
                     }
 
                     @Override

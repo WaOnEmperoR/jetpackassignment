@@ -27,6 +27,6 @@ public interface FavoriteDao {
     Integer checkFavorite(int type, int thingsId);
 
     @Query("DELETE FROM favorite WHERE type = :type AND thingsId = :thingsId")
-    Void deleteFavorite(int type, int thingsId);
+    Integer deleteFavorite(int type, int thingsId);
 
 }
