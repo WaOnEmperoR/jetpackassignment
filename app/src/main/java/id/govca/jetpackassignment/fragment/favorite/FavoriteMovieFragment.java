@@ -117,7 +117,7 @@ public class FavoriteMovieFragment extends Fragment {
             showLoading(true);
 
             favoriteListViewModel = obtainViewModel(getActivity());
-            listFavoriteAdapter = new ListFavoriteAdapter();
+            listFavoriteAdapter = new ListFavoriteAdapter(getActivity());
 
             Locale current = getResources().getConfiguration().locale;
 
