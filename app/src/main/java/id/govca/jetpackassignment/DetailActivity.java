@@ -3,6 +3,7 @@ package id.govca.jetpackassignment;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Switch;
@@ -45,7 +47,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private Switch favoriteSwitch;
 
-    Context context = GlobalApplication.getAppContext();
+    Context context;
 
     private MovieViewModel movieViewModel;
     private TvShowViewModel tvShowViewModel;
@@ -97,6 +99,7 @@ public class DetailActivity extends AppCompatActivity {
         tv_synopsis = findViewById(R.id.tv_movie_synopsis_content);
         imgView_poster = findViewById(R.id.imgView_poster);
         favoriteSwitch = findViewById(R.id.switch_favorite);
+        context = this;
 
         if (category == 0)
         {
@@ -172,13 +175,15 @@ public class DetailActivity extends AppCompatActivity {
 
         favoriteViewModel = obtainFavoriteViewModel(this);
         favoriteViewModel.checkFavorite(0, movieDetail.getId(), this).observe(this, checkInteger -> {
-            if (checkInteger.equals(0)){
+            if (checkInteger.equals(0))
+            {
                 favoriteSwitch.setChecked(false);
             }
             else
             {
                 favoriteSwitch.setChecked(true);
             }
+            manageCheck(0, idThings);
         });
 
         Glide
@@ -214,13 +219,15 @@ public class DetailActivity extends AppCompatActivity {
 
         favoriteViewModel = obtainFavoriteViewModel(this);
         favoriteViewModel.checkFavorite(1, tvShowDetail.getId(), this).observe(this, checkInteger -> {
-            if (checkInteger.equals(0)){
+            if (checkInteger.equals(0))
+            {
                 favoriteSwitch.setChecked(false);
             }
             else
             {
                 favoriteSwitch.setChecked(true);
             }
+            manageCheck(1, idThings);
         });
 
         Glide
@@ -237,5 +244,31 @@ public class DetailActivity extends AppCompatActivity {
             mProgressView.setVisibility(View.GONE);
             mScrollView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void manageCheck(int type, int idThings){
+        favoriteSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    favoriteViewModel.insertFavorite(favorite, context).observe((LifecycleOwner) context, insertInteger -> {
+                        if (insertInteger > 0 )
+                        {
+                            favoriteSwitch.setChecked(true);
+                        }
+                    });
+                }
+                else
+                {
+                    favoriteViewModel.deleteFavorite(type, idThings, context).observe((LifecycleOwner) context, deleteInteger -> {
+                        if (deleteInteger > 0)
+                        {
+                            favoriteSwitch.setChecked(false);
+                        }
+                    });
+                }
+            }
+        });
     }
 }

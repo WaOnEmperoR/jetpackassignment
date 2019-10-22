@@ -38,4 +38,9 @@ public class FavoriteViewModel extends ViewModel {
     {
         return movieRepository.checkFavorite(type, id, context);
     }
+
+    public LiveData<Integer> deleteFavorite(int type, int id, Context context)
+    {
+        return movieRepository.deleteFavorite(type, id, context);
+    }
 }
