@@ -22,13 +22,13 @@ public interface MovieDataSource {
 
     LiveData<TVShowDetail> getTVShowDetail(String param_lang, int tvShowId);
 
-    LiveData<List<Favorite>> getFavorites(int type, Context context);
+    LiveData<List<Favorite>> getFavorites(int type);
 
-    LiveData<Favorite> getFavoriteDetail(int type, int id, Context context);
+    LiveData<Favorite> getFavoriteDetail(int type, int id);
 
-    LiveData<Integer> checkFavorite(int type, int thingsId, Context context);
+    LiveData<Integer> checkFavorite(int type, int thingsId);
 
-    LiveData<Integer> deleteFavorite(int type, int thingsId, Context context);
+    LiveData<Integer> deleteFavorite(int type, int thingsId);
 
-    LiveData<Long> insertFavorite(Favorite favorite, Context context);
+    LiveData<Long> insertFavorite(Favorite favorite);
 }

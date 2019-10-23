@@ -174,7 +174,7 @@ public class DetailActivity extends AppCompatActivity {
         favorite.setSynopsis(movieDetail.getOverview());
 
         favoriteViewModel = obtainFavoriteViewModel(this);
-        favoriteViewModel.checkFavorite(0, movieDetail.getId(), this).observe(this, checkInteger -> {
+        favoriteViewModel.checkFavorite(0, movieDetail.getId()).observe(this, checkInteger -> {
             if (checkInteger.equals(0))
             {
                 favoriteSwitch.setChecked(false);
@@ -218,7 +218,7 @@ public class DetailActivity extends AppCompatActivity {
         favorite.setSynopsis(tvShowDetail.getOverview());
 
         favoriteViewModel = obtainFavoriteViewModel(this);
-        favoriteViewModel.checkFavorite(1, tvShowDetail.getId(), this).observe(this, checkInteger -> {
+        favoriteViewModel.checkFavorite(1, tvShowDetail.getId()).observe(this, checkInteger -> {
             if (checkInteger.equals(0))
             {
                 favoriteSwitch.setChecked(false);
@@ -252,7 +252,7 @@ public class DetailActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
                 {
-                    favoriteViewModel.insertFavorite(favorite, context).observe((LifecycleOwner) context, insertInteger -> {
+                    favoriteViewModel.insertFavorite(favorite).observe((LifecycleOwner) context, insertInteger -> {
                         if (insertInteger > 0 )
                         {
                             favoriteSwitch.setChecked(true);
@@ -261,7 +261,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    favoriteViewModel.deleteFavorite(type, idThings, context).observe((LifecycleOwner) context, deleteInteger -> {
+                    favoriteViewModel.deleteFavorite(type, idThings).observe((LifecycleOwner) context, deleteInteger -> {
                         if (deleteInteger > 0)
                         {
                             favoriteSwitch.setChecked(false);

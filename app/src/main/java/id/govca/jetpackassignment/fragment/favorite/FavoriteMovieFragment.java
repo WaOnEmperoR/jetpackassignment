@@ -119,15 +119,7 @@ public class FavoriteMovieFragment extends Fragment {
             favoriteListViewModel = obtainViewModel(getActivity());
             listFavoriteAdapter = new ListFavoriteAdapter(getActivity());
 
-            Locale current = getResources().getConfiguration().locale;
-
-            param_lang = current.getLanguage() + "-" + current.getCountry();
-            if (param_lang.equals("in-ID"))
-            {
-                param_lang = "id-ID";
-            }
-
-            favoriteListViewModel.getListFavoritesLiveData(0, getContext()).observe(this, favoriteList -> {
+            favoriteListViewModel.getListFavoritesLiveData(0).observe(this, favoriteList -> {
                 showLoading(false);
                 listFavoriteAdapter.setData(favoriteList);
 

@@ -27,62 +27,52 @@ public class LocalRepository {
         return INSTANCE;
     }
 
-    public Observable<List<Favorite>> getFavorites(int type, Context localContext)
+    public Observable<List<Favorite>> getFavorites(int type)
     {
         return Observable.fromCallable(new Callable<List<Favorite>>() {
             @Override
             public List<Favorite> call() {
-                return FavoriteDatabase.getInstance(localContext)
-                        .favoriteDao()
-                        .getFavorites(type);
+                return mFavoriteDao.getFavorites(type);
             }
         });
     }
 
-    public Observable<Favorite> getFavoriteDetail(int type, int id, Context localContext)
+    public Observable<Favorite> getFavoriteDetail(int type, int id)
     {
         return Observable.fromCallable(new Callable<Favorite>() {
             @Override
             public Favorite call() {
-                return FavoriteDatabase.getInstance(localContext)
-                        .favoriteDao()
-                        .getFavoriteDetail(type, id);
+                return mFavoriteDao.getFavoriteDetail(type, id);
             }
         });
     }
 
-    public Observable<Long> insertFavorite(Favorite favorite, Context localContext)
+    public Observable<Long> insertFavorite(Favorite favorite)
     {
         return Observable.fromCallable(new Callable<Long>() {
             @Override
             public Long call() {
-                return FavoriteDatabase.getInstance(localContext)
-                        .favoriteDao()
-                        .insertFavorite(favorite);
+                return mFavoriteDao.insertFavorite(favorite);
             }
         });
     }
 
-    public Observable<Integer> deleteFavorite(int type, int id, Context localContext)
+    public Observable<Integer> deleteFavorite(int type, int id)
     {
         return Observable.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() {
-                return FavoriteDatabase.getInstance(localContext)
-                        .favoriteDao()
-                        .deleteFavorite(type, id);
+                return mFavoriteDao.deleteFavorite(type, id);
             }
         });
     }
 
-    public Observable<Integer> checkFavorite(int type, int id, Context localContext)
+    public Observable<Integer> checkFavorite(int type, int id)
     {
         return Observable.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                return FavoriteDatabase.getInstance(localContext)
-                        .favoriteDao()
-                        .checkFavorite(type, id);
+                return mFavoriteDao.checkFavorite(type, id);
             }
         });
 

@@ -20,8 +20,8 @@ public class FavoriteViewModel extends ViewModel {
         return favoriteMutableLiveData;
     }
 
-    public LiveData<Favorite> getFavoriteLiveData(int type, int id, Context context){
-        return movieRepository.getFavoriteDetail(type, id, context);
+    public LiveData<Favorite> getFavoriteLiveData(int type, int id){
+        return movieRepository.getFavoriteDetail(type, id);
     }
 
     public FavoriteViewModel(MovieRepository movieRepository)
@@ -29,18 +29,18 @@ public class FavoriteViewModel extends ViewModel {
         this.movieRepository = movieRepository;
     }
 
-    public LiveData<Long> insertFavorite(Favorite favorite, Context context)
+    public LiveData<Long> insertFavorite(Favorite favorite)
     {
-        return movieRepository.insertFavorite(favorite, context);
+        return movieRepository.insertFavorite(favorite);
     }
 
-    public LiveData<Integer> checkFavorite(int type, int id, Context context)
+    public LiveData<Integer> checkFavorite(int type, int id)
     {
-        return movieRepository.checkFavorite(type, id, context);
+        return movieRepository.checkFavorite(type, id);
     }
 
-    public LiveData<Integer> deleteFavorite(int type, int id, Context context)
+    public LiveData<Integer> deleteFavorite(int type, int id)
     {
-        return movieRepository.deleteFavorite(type, id, context);
+        return movieRepository.deleteFavorite(type, id);
     }
 }

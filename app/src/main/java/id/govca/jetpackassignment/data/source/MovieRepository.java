@@ -185,10 +185,10 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public LiveData<List<Favorite>> getFavorites(int type, Context context) {
+    public LiveData<List<Favorite>> getFavorites(int type) {
         MutableLiveData<List<Favorite>> favoritesMutableLiveData = new MutableLiveData<>();
 
-        localRepository.getFavorites(type, context)
+        localRepository.getFavorites(type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<Favorite>>() {
@@ -212,10 +212,10 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public LiveData<Favorite> getFavoriteDetail(int type, int id, Context context) {
+    public LiveData<Favorite> getFavoriteDetail(int type, int id) {
         MutableLiveData<Favorite> favoriteMutableLiveData = new MutableLiveData<>();
 
-        localRepository.getFavoriteDetail(type, id, context)
+        localRepository.getFavoriteDetail(type, id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<Favorite>() {
@@ -239,10 +239,10 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public LiveData<Integer> checkFavorite(int type, int thingsId, Context context) {
+    public LiveData<Integer> checkFavorite(int type, int thingsId) {
         MutableLiveData<Integer> favoriteMutableLiveData = new MutableLiveData<>();
 
-        localRepository.checkFavorite(type, thingsId, context)
+        localRepository.checkFavorite(type, thingsId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<Integer>() {
@@ -266,10 +266,10 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public LiveData<Integer> deleteFavorite(int type, int thingsId, Context context) {
+    public LiveData<Integer> deleteFavorite(int type, int thingsId) {
         MutableLiveData<Integer> favoriteMutableLiveData = new MutableLiveData<>();
 
-        localRepository.deleteFavorite(type, thingsId, context)
+        localRepository.deleteFavorite(type, thingsId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<Integer>() {
@@ -293,10 +293,10 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public LiveData<Long> insertFavorite(Favorite favorite, Context context) {
+    public LiveData<Long> insertFavorite(Favorite favorite) {
         MutableLiveData<Long> favoriteMutableLiveData = new MutableLiveData<>();
 
-        localRepository.insertFavorite(favorite, context)
+        localRepository.insertFavorite(favorite)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<Long>() {

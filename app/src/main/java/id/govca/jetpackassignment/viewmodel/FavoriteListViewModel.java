@@ -31,8 +31,8 @@ public class FavoriteListViewModel extends ViewModel {
         return listFavorite;
     }
 
-    public LiveData<List<Favorite>> getListFavoritesLiveData(int type, Context context){
-        return movieRepository.getFavorites(type, context);
+    public LiveData<List<Favorite>> getListFavoritesLiveData(int type){
+        return movieRepository.getFavorites(type);
     }
 
     public FavoriteListViewModel(MovieRepository movieRepository)

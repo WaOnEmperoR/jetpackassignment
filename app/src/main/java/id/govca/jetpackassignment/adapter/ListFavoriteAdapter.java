@@ -86,7 +86,7 @@ public class ListFavoriteAdapter extends RecyclerView.Adapter<ListFavoriteAdapte
             @Override
             public void onClick(View v) {
                 favoriteViewModel = obtainFavoriteViewModel(fragmentActivity);
-                favoriteViewModel.deleteFavorite(favorite.getType(), favorite.getThingsId(), fragmentActivity).observe(fragmentActivity, deleteInteger -> {
+                favoriteViewModel.deleteFavorite(favorite.getType(), favorite.getThingsId()).observe(fragmentActivity, deleteInteger -> {
                     if (deleteInteger > 0)
                     {
                         removeAt(holder.getAdapterPosition());

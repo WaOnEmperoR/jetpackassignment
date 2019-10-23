@@ -4,13 +4,27 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Locale;
+
+import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.R;
+import id.govca.jetpackassignment.adapter.ListFavoriteAdapter;
+import id.govca.jetpackassignment.data.source.local.entity.Favorite;
+import id.govca.jetpackassignment.viewmodel.FavoriteListViewModel;
+import id.govca.jetpackassignment.viewmodel.ViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +45,16 @@ public class FavoriteTVShowFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private final String TAG = this.getClass().getSimpleName();
+    private View mProgressView;
+
+    private ListFavoriteAdapter listFavoriteAdapter;
+
+    private RecyclerView rvMovies;
+    private String param_lang;
+
+    private FavoriteListViewModel favoriteListViewModel;
 
     public FavoriteTVShowFragment() {
         // Required empty public constructor
@@ -64,10 +88,54 @@ public class FavoriteTVShowFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mProgressView = view.findViewById(R.id.progressBarFavoriteMovie);
+        rvMovies = view.findViewById(R.id.recyclerView_favorite_movie);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite_tvshow, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorite_movie, container, false);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        EspressoIdlingResource.increment();
+
+        if (getActivity()!=null)
+        {
+            showLoading(true);
+
+            favoriteListViewModel = obtainViewModel(getActivity());
+            listFavoriteAdapter = new ListFavoriteAdapter(getActivity());
+
+            favoriteListViewModel.getListFavoritesLiveData(1).observe(this, favoriteList -> {
+                showLoading(false);
+                listFavoriteAdapter.setData(favoriteList);
+
+                listFavoriteAdapter.setOnItemClickCallback(new ListFavoriteAdapter.OnItemClickCallback() {
+                    @Override
+                    public void onItemClicked(Favorite data) {
+                        Log.d(TAG, String.valueOf(data.getFavId()));
+
+//                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+//                        intent.putExtra("Movie_ID", data.getId());
+//                        intent.putExtra("Category", 0);
+//                        startActivity(intent);
+                    }
+                });
+            });
+
+            rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
+            rvMovies.setHasFixedSize(true);
+            rvMovies.setAdapter(listFavoriteAdapter);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -75,6 +143,13 @@ public class FavoriteTVShowFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @NonNull
+    private static FavoriteListViewModel obtainViewModel(FragmentActivity activity) {
+        // Use a Factory to inject dependencies into the ViewModel
+        ViewModelFactory factory = ViewModelFactory.getInstance(activity.getApplication());
+        return ViewModelProviders.of(activity, factory).get(FavoriteListViewModel.class);
     }
 
     @Override
@@ -107,5 +182,13 @@ public class FavoriteTVShowFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void showLoading(Boolean state) {
+        if (state) {
+            mProgressView.setVisibility(View.VISIBLE);
+        } else {
+            mProgressView.setVisibility(View.GONE);
+        }
     }
 }
