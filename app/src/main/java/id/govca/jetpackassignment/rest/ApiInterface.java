@@ -14,7 +14,8 @@ public interface ApiInterface {
 
     @GET("discover/movie")
     Observable<MovieList> RxGetMovieList(@Query("api_key") String apiKey,
-                                         @Query("language") String language);
+                                         @Query("language") String language,
+                                         @Query("page") int page );
 
     @GET("discover/movie")
     Observable<MovieList> RxGetMoviesToday(@Query("api_key") String apiKey,

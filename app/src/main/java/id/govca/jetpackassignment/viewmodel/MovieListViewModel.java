@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.paging.PagedList;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
@@ -45,7 +46,13 @@ public class MovieListViewModel extends ViewModel {
 
     public LiveData<List<Movie>> getListMoviesLiveData(String param_lang){
         return movieRepository.getAllMovies(param_lang);
+
     }
+
+    public LiveData<PagedList<Movie>> getPagedListMoviesLiveData(){
+        return movieRepository.getMoviesPaged();
+    }
+
 
     public MovieListViewModel(MovieRepository movieRepository)
     {
@@ -67,7 +74,7 @@ public class MovieListViewModel extends ViewModel {
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
         disposable.add(
-            mApiService.RxGetMovieList(Constants.API_KEY, "en-US")
+            mApiService.RxGetMovieList(Constants.API_KEY, "en-US", 1)
                 .compose(RxObservableSchedulers.TEST_SCHEDULER.applySchedulers())
                 .subscribe(this::onSuccess,
                         this::onError)
@@ -86,7 +93,7 @@ public class MovieListViewModel extends ViewModel {
     private Observable<MovieList> getMovieListObs(String param_lang){
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
-        return mApiService.RxGetMovieList(Constants.API_KEY, param_lang)
+        return mApiService.RxGetMovieList(Constants.API_KEY, param_lang,1 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

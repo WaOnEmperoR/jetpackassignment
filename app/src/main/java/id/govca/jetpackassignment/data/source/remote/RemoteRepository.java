@@ -1,5 +1,13 @@
 package id.govca.jetpackassignment.data.source.remote;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PageKeyedDataSource;
+import androidx.paging.PagedList;
+
+import java.util.List;
+
+import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.pojo.TVShowList;
@@ -25,7 +33,7 @@ public class RemoteRepository {
     }
 
     public Observable<MovieList> getMovieList(String language){
-        return mApiInterface.RxGetMovieList(Constants.API_KEY, language);
+        return mApiInterface.RxGetMovieList(Constants.API_KEY, language, 1);
     }
 
     public Observable<MovieDetail> getMovieDetail(int id_movie, String language){
@@ -38,5 +46,14 @@ public class RemoteRepository {
 
     public Observable<TVShowDetail> getTVShowDetail(int id_tv_show, String language){
         return mApiInterface.RxTVShowDetails(id_tv_show, Constants.API_KEY, language);
+    }
+
+    public LiveData<PagedList<Movie>> getMovieListLiveData(){
+        RemoteDataSourceFactory remoteDataSourceFactory = new RemoteDataSourceFactory();
+        LiveData<PageKeyedDataSource<Integer, Movie>> liveDataRemote = remoteDataSourceFactory.getMovieLiveDataSource();
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .build();
+        return new LivePagedListBuilder<>(remoteDataSourceFactory, config).build();
     }
 }

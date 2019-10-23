@@ -1,5 +1,8 @@
 package id.govca.jetpackassignment.adapter;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,9 +23,11 @@ import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.rest.Constants;
 
-public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.ListViewHolder>{
+public class ListMovieAdapter extends PagedListAdapter<Movie, ListMovieAdapter.ListViewHolder> {
     private ArrayList<Movie> listMovie = new ArrayList<>();
     private ArrayList<Movie> listMovieBackup = new ArrayList<>();
+
+    private final Activity activity;
 
     private OnItemClickCallback onItemClickCallback;
     public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
@@ -31,8 +38,10 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
         void onItemClicked(Movie data);
     }
 
-    public ListMovieAdapter()
+    public ListMovieAdapter(Activity activity)
     {
+        super(DIFF_CALLBACK);
+        this.activity = activity;
     }
 
     public ArrayList<Movie> getListMovie(){
@@ -60,9 +69,17 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
         return new ListViewHolder(view);
     }
 
+//    @Override
+//    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+//
+//    }
+
     @Override
-    public void onBindViewHolder(@NonNull final ListMovieAdapter.ListViewHolder holder, int position) {
-        Movie movie = listMovie.get(position);
+    public void onBindViewHolder(@NonNull final ListViewHolder holder, int position) {
+//        Movie movie = listMovie.get(position);
+        final Movie movie = getItem(position);
+
+        Log.d("ViewHolder", String.valueOf(position));
 
         Glide
                 .with(holder.itemView.getContext())
@@ -99,5 +116,21 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
             tv_movie_name = itemView.findViewById(R.id.tv_movie_title);
         }
     }
+
+    private static DiffUtil.ItemCallback<Movie> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<Movie>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull Movie oldItem, @NonNull Movie newItem) {
+                    Log.d("ListMovie", oldItem.getTitle());
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @SuppressLint("DiffUtilEquals")
+                @Override
+                public boolean areContentsTheSame(@NonNull Movie oldItem, @NonNull Movie newItem) {
+                    Log.d("ListMovie", oldItem.getTitle());
+                    return oldItem.equals(newItem);
+                }
+            };
 
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -102,14 +103,14 @@ public class MovieFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        EspressoIdlingResource.increment();
+//        EspressoIdlingResource.increment();
 
         if (getActivity()!=null)
         {
             showLoading(true);
 
             movieListViewModel = obtainViewModel(getActivity());
-            listMovieAdapter = new ListMovieAdapter();
+            listMovieAdapter = new ListMovieAdapter(getActivity());
 
             Locale current = getResources().getConfiguration().locale;
 
@@ -119,26 +120,44 @@ public class MovieFragment extends Fragment {
                 param_lang = "id-ID";
             }
 
-            movieListViewModel.getListMoviesLiveData(param_lang).observe(this, movies -> {
-                showLoading(false);
-                listMovieAdapter.setData(movies);
+            movieListViewModel.getPagedListMoviesLiveData().observe(this, new Observer<PagedList<Movie>>() {
+                @Override
+                public void onChanged(PagedList<Movie> movies) {
+                    showLoading(false);
+                    listMovieAdapter.submitList(movies);
 
-                listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
-                    @Override
-                    public void onItemClicked(Movie data) {
-                        Log.d(TAG, String.valueOf(data.getId()));
-
-                        Intent intent = new Intent(getActivity(), DetailActivity.class);
-                        intent.putExtra("Movie_ID", data.getId());
-                        intent.putExtra("Category", 0);
-                        startActivity(intent);
+                    Log.d(TAG, "getList : " + movies.size());
+                    for(int i=0; i<movies.size(); i++)
+                    {
+                        Log.d(TAG, movies.get(i).getTitle());
                     }
-                });
 
-                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
-                    EspressoIdlingResource.decrement();
+//                    if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+//                        EspressoIdlingResource.decrement();
+//                    }
                 }
             });
+
+//            movieListViewModel.getListMoviesLiveData(param_lang).observe(this, movies -> {
+//                showLoading(false);
+//                listMovieAdapter.setData(movies);
+//
+//                listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
+//                    @Override
+//                    public void onItemClicked(Movie data) {
+//                        Log.d(TAG, String.valueOf(data.getId()));
+//
+//                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+//                        intent.putExtra("Movie_ID", data.getId());
+//                        intent.putExtra("Category", 0);
+//                        startActivity(intent);
+//                    }
+//                });
+//
+//                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+//                    EspressoIdlingResource.decrement();
+//                }
+//            });
 
             rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
             rvMovies.setHasFixedSize(true);

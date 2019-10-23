@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.paging.DataSource;
+import androidx.paging.PagedList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +96,7 @@ public class MovieRepository implements MovieDataSource {
                     }
                 });
 
+//        DataSource.Factory<Integer, Movie>
         return movieList;
     }
 
@@ -317,5 +320,9 @@ public class MovieRepository implements MovieDataSource {
                 });
 
         return favoriteMutableLiveData;
+    }
+
+    public LiveData<PagedList<Movie>> getMoviesPaged(){
+        return remoteRepository.getMovieListLiveData();
     }
 }
