@@ -29,7 +29,8 @@ public interface ApiInterface {
 
     @GET("discover/tv")
     Observable<TVShowList> RxGetTVShowList(@Query("api_key") String apiKey,
-                                           @Query("language") String language);
+                                           @Query("language") String language,
+                                           @Query("page") int page);
 
     @GET("search/tv")
     Observable<TVShowList> RxSearchTVShows(@Query("query") String query,

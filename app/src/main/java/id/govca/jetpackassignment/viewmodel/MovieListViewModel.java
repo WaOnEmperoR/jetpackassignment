@@ -12,7 +12,6 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import java.util.List;
 
-import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.GlobalApplication;
 import id.govca.jetpackassignment.data.source.MovieRepository;
 import id.govca.jetpackassignment.pojo.Movie;
@@ -21,7 +20,6 @@ import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
 import id.govca.jetpackassignment.rest.Constants;
 import id.govca.jetpackassignment.rest.RxObservableSchedulers;
-import id.govca.jetpackassignment.rest.RxSingleSchedulers;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -49,8 +47,8 @@ public class MovieListViewModel extends ViewModel {
 
     }
 
-    public LiveData<PagedList<Movie>> getPagedListMoviesLiveData(){
-        return movieRepository.getMoviesPaged();
+    public LiveData<PagedList<Movie>> getPagedListMoviesLiveData(String language){
+        return movieRepository.getMoviesPaged(language);
     }
 
 

@@ -7,21 +7,27 @@ import androidx.paging.PageKeyedDataSource;
 
 import id.govca.jetpackassignment.pojo.Movie;
 
-public class RemoteDataSourceFactory extends DataSource.Factory {
+public class RemoteDataSourceMovieFactory extends DataSource.Factory {
+
+    private final String language;
 
     //creating the mutable live data
     private MutableLiveData<PageKeyedDataSource<Integer, Movie>> movieLiveDataSource = new MutableLiveData<>();
+
+    public RemoteDataSourceMovieFactory(String mLanguage){
+        language = mLanguage;
+    }
 
     @NonNull
     @Override
     public DataSource<Integer, Movie> create() {
         //getting our data source object
-        RemoteDataSource remoteDataSource = new RemoteDataSource();
+        RemoteDataSourceMovie remoteDataSourceMovie = new RemoteDataSourceMovie(language);
 
         //posting the datasource to get the values
-        movieLiveDataSource.postValue(remoteDataSource);
+        movieLiveDataSource.postValue(remoteDataSourceMovie);
 
-        return remoteDataSource;
+        return remoteDataSourceMovie;
     }
 
     //getter for itemlivedatasource

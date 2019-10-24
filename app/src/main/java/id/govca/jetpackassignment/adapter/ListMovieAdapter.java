@@ -24,8 +24,6 @@ import id.govca.jetpackassignment.rest.Constants;
 public class ListMovieAdapter extends PagedListAdapter<Movie, ListMovieAdapter.ListViewHolder> {
     private ArrayList<Movie> listMovie = new ArrayList<>();
 
-    private final Activity activity;
-
     private OnItemClickCallback onItemClickCallback;
     public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback;
@@ -35,10 +33,9 @@ public class ListMovieAdapter extends PagedListAdapter<Movie, ListMovieAdapter.L
         void onItemClicked(Movie data);
     }
 
-    public ListMovieAdapter(Activity activity)
+    public ListMovieAdapter()
     {
         super(DIFF_CALLBACK);
-        this.activity = activity;
     }
 
     public ArrayList<Movie> getListMovie(){

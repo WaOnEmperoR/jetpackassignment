@@ -1,5 +1,6 @@
 package id.govca.jetpackassignment.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -15,10 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.govca.jetpackassignment.R;
+import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.rest.Constants;
 
-public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.ListViewHolder>{
+public class ListTvShowAdapter extends PagedListAdapter<TVShow, ListTvShowAdapter.ListViewHolder> {
     private ArrayList<TVShow> listTvShow = new ArrayList<>();
     private ArrayList<TVShow> listTvShowBackup = new ArrayList<>();
 
@@ -29,6 +33,7 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
 
     public ListTvShowAdapter()
     {
+        super(DIFF_CALLBACK);
     }
 
     public void setData(ArrayList<TVShow> items) {
@@ -54,7 +59,7 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
 
     @Override
     public void onBindViewHolder(@NonNull final ListTvShowAdapter.ListViewHolder holder, int position) {
-        TVShow tvShow = listTvShow.get(position);
+        final TVShow tvShow = getItem(position);
 
         Glide
                 .with(holder.itemView.getContext())
@@ -68,23 +73,18 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickCallback.onItemClicked(listTvShow.get(holder.getAdapterPosition()));
+                onItemClickCallback.onItemClicked(tvShow);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return listTvShow.size();
+        return super.getItemCount();
     }
 
     public interface OnItemClickCallback {
         void onItemClicked(TVShow data);
-    }
-
-    public ListTvShowAdapter(ArrayList<TVShow> list)
-    {
-        this.listTvShow = list;
     }
 
     public class ListViewHolder extends RecyclerView.ViewHolder {
@@ -100,5 +100,19 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
             tv_movie_name = itemView.findViewById(R.id.tv_movie_title);
         }
     }
+
+    private static DiffUtil.ItemCallback<TVShow> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<TVShow>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull TVShow oldItem, @NonNull TVShow newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @SuppressLint("DiffUtilEquals")
+                @Override
+                public boolean areContentsTheSame(@NonNull TVShow oldItem, @NonNull TVShow newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
 
 }

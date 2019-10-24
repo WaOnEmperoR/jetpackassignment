@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.paging.PagedList;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
@@ -44,6 +45,10 @@ public class TvShowListViewModel extends ViewModel {
 
     }
 
+    public LiveData<PagedList<TVShow>> getPagedListMoviesLiveData(String language){
+        return movieRepository.getTVShowsPaged(language);
+    }
+
     public LiveData<List<TVShow>> getListTVShowLiveData(String param_lang){
         return movieRepository.getAllTVShows(param_lang);
     }
@@ -68,7 +73,7 @@ public class TvShowListViewModel extends ViewModel {
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
         disposable.add(
-                mApiService.RxGetTVShowList(Constants.API_KEY, "en-US")
+                mApiService.RxGetTVShowList(Constants.API_KEY, "en-US", 1)
                         .compose(RxObservableSchedulers.TEST_SCHEDULER.applySchedulers())
                         .subscribe(this::onSuccess,
                                 this::onError)
@@ -87,7 +92,7 @@ public class TvShowListViewModel extends ViewModel {
     {
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
-        return mApiService.RxGetTVShowList(Constants.API_KEY, param_lang)
+        return mApiService.RxGetTVShowList(Constants.API_KEY, param_lang, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

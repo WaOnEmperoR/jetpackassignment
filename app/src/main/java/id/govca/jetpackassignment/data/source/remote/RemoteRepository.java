@@ -2,13 +2,11 @@ package id.govca.jetpackassignment.data.source.remote;
 
 import androidx.lifecycle.LiveData;
 import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PageKeyedDataSource;
 import androidx.paging.PagedList;
-
-import java.util.List;
 
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
+import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.pojo.TVShowList;
 import io.reactivex.Observable;
@@ -41,19 +39,28 @@ public class RemoteRepository {
     }
 
     public Observable<TVShowList> getTVShowList(String language){
-        return mApiInterface.RxGetTVShowList(Constants.API_KEY, language);
+        return mApiInterface.RxGetTVShowList(Constants.API_KEY, language, 1);
     }
 
     public Observable<TVShowDetail> getTVShowDetail(int id_tv_show, String language){
         return mApiInterface.RxTVShowDetails(id_tv_show, Constants.API_KEY, language);
     }
 
-    public LiveData<PagedList<Movie>> getMovieListLiveData(){
-        RemoteDataSourceFactory remoteDataSourceFactory = new RemoteDataSourceFactory();
+    public LiveData<PagedList<Movie>> getMovieListLiveData(String language){
+        RemoteDataSourceMovieFactory remoteDataSourceMovieFactory = new RemoteDataSourceMovieFactory(language);
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
                 .setPageSize(5)
                 .build();
-        return new LivePagedListBuilder<>(remoteDataSourceFactory, config).build();
+        return new LivePagedListBuilder<>(remoteDataSourceMovieFactory, config).build();
+    }
+
+    public LiveData<PagedList<TVShow>> getTVShowListLiveData(String language){
+        RemoteDataSourceTVShowFactory remoteDataSourceTVShowFactory = new RemoteDataSourceTVShowFactory(language);
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPageSize(5)
+                .build();
+        return new LivePagedListBuilder<>(remoteDataSourceTVShowFactory, config).build();
     }
 }

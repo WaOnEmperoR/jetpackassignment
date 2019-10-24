@@ -1,22 +1,17 @@
 package id.govca.jetpackassignment.data.source;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.paging.DataSource;
 import androidx.paging.PagedList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import id.govca.jetpackassignment.GlobalApplication;
-import id.govca.jetpackassignment.data.NetworkBoundResource;
 import id.govca.jetpackassignment.data.source.local.LocalRepository;
 import id.govca.jetpackassignment.data.source.local.entity.Favorite;
-import id.govca.jetpackassignment.data.source.remote.ApiResponse;
 import id.govca.jetpackassignment.data.source.remote.RemoteRepository;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
@@ -25,7 +20,6 @@ import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
 import id.govca.jetpackassignment.pojo.TVShowList;
 import id.govca.jetpackassignment.utils.AppExecutors;
-import id.govca.jetpackassignment.vo.Resource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -321,7 +315,11 @@ public class MovieRepository implements MovieDataSource {
         return favoriteMutableLiveData;
     }
 
-    public LiveData<PagedList<Movie>> getMoviesPaged(){
-        return remoteRepository.getMovieListLiveData();
+    public LiveData<PagedList<Movie>> getMoviesPaged(String language){
+        return remoteRepository.getMovieListLiveData(language);
+    }
+
+    public LiveData<PagedList<TVShow>> getTVShowsPaged(String language){
+        return remoteRepository.getTVShowListLiveData(language);
     }
 }

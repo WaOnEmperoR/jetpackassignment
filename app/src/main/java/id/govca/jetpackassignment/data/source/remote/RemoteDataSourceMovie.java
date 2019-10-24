@@ -17,16 +17,19 @@ import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class RemoteDataSource extends PageKeyedDataSource<Integer, Movie> {
-    private static RemoteDataSource INSTANCE;
+public class RemoteDataSourceMovie extends PageKeyedDataSource<Integer, Movie> {
     private ApiInterface mApiInterface = ApiClient.getClient().create(ApiInterface.class);
 
     //we will start from the first page which is 1
     private static final int FIRST_PAGE = 1;
 
-    private static final String language = "en-US";
+    private final String language;
 
     private final String TAG = this.getClass().getSimpleName();
+
+    public RemoteDataSourceMovie(String mLanguage){
+        this.language = mLanguage;
+    }
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Movie> callback) {

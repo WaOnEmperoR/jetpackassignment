@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -121,29 +122,32 @@ public class TVShowFragment extends Fragment {
                 param_lang = "id-ID";
             }
 
-            tvShowListViewModel.getListTVShowLiveData(param_lang).observe(this, tvShows -> {
-                showLoading(false);
-                listTvShowAdapter.setData(tvShows);
+            tvShowListViewModel.getPagedListMoviesLiveData(param_lang).observe(this, new Observer<PagedList<TVShow>>() {
+                @Override
+                public void onChanged(PagedList<TVShow> tvShows) {
+                    showLoading(false);
+                    listTvShowAdapter.submitList(tvShows);
 
-                listTvShowAdapter.setOnItemClickCallback(new ListTvShowAdapter.OnItemClickCallback() {
-                    @Override
-                    public void onItemClicked(TVShow data) {
-                        Log.d(TAG, String.valueOf(data.getId()));
+                    listTvShowAdapter.setOnItemClickCallback(new ListTvShowAdapter.OnItemClickCallback() {
+                        @Override
+                        public void onItemClicked(TVShow data) {
+                            Log.d(TAG, String.valueOf(data.getId()));
 
-                        Intent intent = new Intent(getActivity(), DetailActivity.class);
-                        intent.putExtra("Movie_ID", data.getId());
-                        intent.putExtra("Category", 1);
-                        startActivity(intent);
+                            Intent intent = new Intent(getActivity(), DetailActivity.class);
+                            intent.putExtra("Movie_ID", data.getId());
+                            intent.putExtra("Category", 1);
+                            startActivity(intent);
+                        }
+                    });
+
+                    if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                        EspressoIdlingResource.decrement();
                     }
-                });
-
-                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
-                    EspressoIdlingResource.decrement();
                 }
             });
 
             rvTvShow.setLayoutManager(new LinearLayoutManager(getContext()));
-            rvTvShow.setHasFixedSize(true);
+            rvTvShow.setHasFixedSize(false);
             rvTvShow.setAdapter(listTvShowAdapter);
         }
     }

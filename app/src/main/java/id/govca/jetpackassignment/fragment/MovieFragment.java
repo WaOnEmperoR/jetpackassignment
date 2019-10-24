@@ -110,7 +110,7 @@ public class MovieFragment extends Fragment {
             showLoading(true);
 
             movieListViewModel = obtainViewModel(getActivity());
-            listMovieAdapter = new ListMovieAdapter(getActivity());
+            listMovieAdapter = new ListMovieAdapter();
 
             Locale current = getResources().getConfiguration().locale;
 
@@ -120,7 +120,7 @@ public class MovieFragment extends Fragment {
                 param_lang = "id-ID";
             }
 
-            movieListViewModel.getPagedListMoviesLiveData().observe(this, new Observer<PagedList<Movie>>() {
+            movieListViewModel.getPagedListMoviesLiveData(param_lang).observe(this, new Observer<PagedList<Movie>>() {
                 @Override
                 public void onChanged(PagedList<Movie> movies) {
                     showLoading(false);
