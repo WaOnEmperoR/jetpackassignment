@@ -50,9 +50,9 @@ public class RemoteRepository {
 
     public LiveData<PagedList<Movie>> getMovieListLiveData(){
         RemoteDataSourceFactory remoteDataSourceFactory = new RemoteDataSourceFactory();
-        LiveData<PageKeyedDataSource<Integer, Movie>> liveDataRemote = remoteDataSourceFactory.getMovieLiveDataSource();
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
+                .setPageSize(5)
                 .build();
         return new LivePagedListBuilder<>(remoteDataSourceFactory, config).build();
     }

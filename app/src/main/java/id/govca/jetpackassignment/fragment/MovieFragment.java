@@ -103,7 +103,7 @@ public class MovieFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        EspressoIdlingResource.increment();
+        EspressoIdlingResource.increment();
 
         if (getActivity()!=null)
         {
@@ -126,41 +126,26 @@ public class MovieFragment extends Fragment {
                     showLoading(false);
                     listMovieAdapter.submitList(movies);
 
-                    Log.d(TAG, "getList : " + movies.size());
-                    for(int i=0; i<movies.size(); i++)
-                    {
-                        Log.d(TAG, movies.get(i).getTitle());
-                    }
+                    listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
+                        @Override
+                        public void onItemClicked(Movie data) {
+                            Log.d(TAG, String.valueOf(data.getId()));
 
-//                    if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
-//                        EspressoIdlingResource.decrement();
-//                    }
+                            Intent intent = new Intent(getActivity(), DetailActivity.class);
+                            intent.putExtra("Movie_ID", data.getId());
+                            intent.putExtra("Category", 0);
+                            startActivity(intent);
+                        }
+                    });
+
+                    if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                        EspressoIdlingResource.decrement();
+                    }
                 }
             });
 
-//            movieListViewModel.getListMoviesLiveData(param_lang).observe(this, movies -> {
-//                showLoading(false);
-//                listMovieAdapter.setData(movies);
-//
-//                listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
-//                    @Override
-//                    public void onItemClicked(Movie data) {
-//                        Log.d(TAG, String.valueOf(data.getId()));
-//
-//                        Intent intent = new Intent(getActivity(), DetailActivity.class);
-//                        intent.putExtra("Movie_ID", data.getId());
-//                        intent.putExtra("Category", 0);
-//                        startActivity(intent);
-//                    }
-//                });
-//
-//                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
-//                    EspressoIdlingResource.decrement();
-//                }
-//            });
-
             rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
-            rvMovies.setHasFixedSize(true);
+            rvMovies.setHasFixedSize(false);
             rvMovies.setAdapter(listMovieAdapter);
         }
     }
