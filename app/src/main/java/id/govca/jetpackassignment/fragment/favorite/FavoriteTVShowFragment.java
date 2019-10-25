@@ -115,25 +115,34 @@ public class FavoriteTVShowFragment extends Fragment {
             favoriteListViewModel = obtainViewModel(getActivity());
             listFavoriteAdapter = new ListFavoriteAdapter(getActivity());
 
-            favoriteListViewModel.getListFavoritesLiveData(1).observe(this, favoriteList -> {
+            favoriteListViewModel.getAllFavorites(1).observe(this, favorites -> {
                 showLoading(false);
-                listFavoriteAdapter.setData(favoriteList);
+                listFavoriteAdapter.submitList(favorites);
 
-                listFavoriteAdapter.setOnItemClickCallback(new ListFavoriteAdapter.OnItemClickCallback() {
-                    @Override
-                    public void onItemClicked(Favorite data) {
-                        Log.d(TAG, String.valueOf(data.getFavId()));
-
-//                        Intent intent = new Intent(getActivity(), DetailActivity.class);
-//                        intent.putExtra("Movie_ID", data.getId());
-//                        intent.putExtra("Category", 0);
-//                        startActivity(intent);
-                    }
-                });
+                if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                    EspressoIdlingResource.decrement();
+                }
             });
 
+//            favoriteListViewModel.getListFavoritesLiveData(1).observe(this, favoriteList -> {
+//                showLoading(false);
+//                listFavoriteAdapter.setData(favoriteList);
+//
+//                listFavoriteAdapter.setOnItemClickCallback(new ListFavoriteAdapter.OnItemClickCallback() {
+//                    @Override
+//                    public void onItemClicked(Favorite data) {
+//                        Log.d(TAG, String.valueOf(data.getFavId()));
+//
+////                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+////                        intent.putExtra("Movie_ID", data.getId());
+////                        intent.putExtra("Category", 0);
+////                        startActivity(intent);
+//                    }
+//                });
+//            });
+
             rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
-            rvMovies.setHasFixedSize(true);
+            rvMovies.setHasFixedSize(false);
             rvMovies.setAdapter(listFavoriteAdapter);
         }
     }

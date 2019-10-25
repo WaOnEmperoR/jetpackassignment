@@ -1,7 +1,5 @@
 package id.govca.jetpackassignment.data.source;
 
-import android.content.Context;
-
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
@@ -11,7 +9,6 @@ import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
 import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.pojo.TVShowDetail;
-import id.govca.jetpackassignment.vo.Resource;
 
 public interface MovieDataSource {
     LiveData<List<Movie>> getAllMovies(String param_lang);

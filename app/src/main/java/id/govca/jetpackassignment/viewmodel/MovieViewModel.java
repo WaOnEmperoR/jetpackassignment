@@ -9,19 +9,13 @@ import androidx.lifecycle.ViewModel;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
-import java.util.List;
-
-import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.GlobalApplication;
 import id.govca.jetpackassignment.data.source.MovieRepository;
-import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
-import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.rest.ApiClient;
 import id.govca.jetpackassignment.rest.ApiInterface;
 import id.govca.jetpackassignment.rest.Constants;
 import id.govca.jetpackassignment.rest.RxObservableSchedulers;
-import id.govca.jetpackassignment.vo.Resource;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

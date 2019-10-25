@@ -5,6 +5,8 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -38,6 +40,11 @@ public class FavoriteListViewModel extends ViewModel {
     public FavoriteListViewModel(MovieRepository movieRepository)
     {
         this.movieRepository = movieRepository;
+    }
+
+    public LiveData<PagedList<Favorite>> getAllFavorites(int type)
+    {
+        return movieRepository.getFavoritesPaged(type);
     }
 
     public void fetchFavoriteList(int type, Context localContext)

@@ -1,5 +1,6 @@
 package id.govca.jetpackassignment.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +27,7 @@ import id.govca.jetpackassignment.rest.Constants;
 import id.govca.jetpackassignment.viewmodel.FavoriteViewModel;
 import id.govca.jetpackassignment.viewmodel.ViewModelFactory;
 
-public class ListFavoriteAdapter extends RecyclerView.Adapter<ListFavoriteAdapter.ListViewHolder>{
+public class ListFavoriteAdapter extends PagedListAdapter<Favorite, ListFavoriteAdapter.ListViewHolder> {
     private ArrayList<Favorite> listFavorite = new ArrayList<>();
     private ArrayList<Favorite> listFavoriteBackup = new ArrayList<>();
     private FragmentActivity fragmentActivity;
@@ -42,6 +45,7 @@ public class ListFavoriteAdapter extends RecyclerView.Adapter<ListFavoriteAdapte
 
     public ListFavoriteAdapter(FragmentActivity activity)
     {
+        super(DIFF_CALLBACK);
         fragmentActivity = activity;
     }
 
@@ -72,7 +76,7 @@ public class ListFavoriteAdapter extends RecyclerView.Adapter<ListFavoriteAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ListFavoriteAdapter.ListViewHolder holder, int position) {
-        Favorite favorite = listFavorite.get(position);
+        final Favorite favorite = getItem(position);
 
         Glide
                 .with(holder.itemView.getContext())
@@ -86,12 +90,8 @@ public class ListFavoriteAdapter extends RecyclerView.Adapter<ListFavoriteAdapte
             @Override
             public void onClick(View v) {
                 favoriteViewModel = obtainFavoriteViewModel(fragmentActivity);
-                favoriteViewModel.deleteFavorite(favorite.getType(), favorite.getThingsId()).observe(fragmentActivity, deleteInteger -> {
-                    if (deleteInteger > 0)
-                    {
-                        removeAt(holder.getAdapterPosition());
-                    }
-                });
+                favoriteViewModel.deleteFavoritePaged(favorite.getType(), favorite.getThingsId());
+                removeAt(holder.getAdapterPosition());
             }
         });
 
@@ -105,13 +105,11 @@ public class ListFavoriteAdapter extends RecyclerView.Adapter<ListFavoriteAdapte
 
     @Override
     public int getItemCount() {
-        return listFavorite.size();
+        return super.getItemCount();
     }
 
     public void removeAt(int position) {
-        listFavorite.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, listFavorite.size());
+        this.notifyItemRemoved(position);
     }
 
     public class ListViewHolder extends RecyclerView.ViewHolder {
@@ -137,5 +135,19 @@ public class ListFavoriteAdapter extends RecyclerView.Adapter<ListFavoriteAdapte
 
         return ViewModelProviders.of(activity, factory).get(FavoriteViewModel.class);
     }
+
+    private static DiffUtil.ItemCallback<Favorite> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<Favorite>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull Favorite oldItem, @NonNull Favorite newItem) {
+                    return oldItem.getType() == newItem.getType() && oldItem.getThingsId() == newItem.getThingsId();
+                }
+
+                @SuppressLint("DiffUtilEquals")
+                @Override
+                public boolean areContentsTheSame(@NonNull Favorite oldItem, @NonNull Favorite newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
 
 }

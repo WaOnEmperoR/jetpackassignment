@@ -43,4 +43,9 @@ public class FavoriteViewModel extends ViewModel {
     {
         return movieRepository.deleteFavorite(type, id);
     }
+
+    public void deleteFavoritePaged(int type, int id)
+    {
+        movieRepository.deleteFavoritePaged(type, id);
+    }
 }

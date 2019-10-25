@@ -1,11 +1,15 @@
 package id.govca.jetpackassignment.data.source.local;
 
+import android.app.Application;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import id.govca.jetpackassignment.data.source.local.entity.Favorite;
 import id.govca.jetpackassignment.data.source.local.room.FavoriteDao;
@@ -15,9 +19,11 @@ import io.reactivex.Observable;
 public class LocalRepository {
     private static LocalRepository INSTANCE;
     private final FavoriteDao mFavoriteDao;
+    private ExecutorService executorService;
 
     private LocalRepository(FavoriteDao mFavoriteDao) {
         this.mFavoriteDao = mFavoriteDao;
+        executorService = Executors.newSingleThreadExecutor();
     }
 
     public static LocalRepository getInstance(FavoriteDao favoriteDao) {
@@ -76,5 +82,30 @@ public class LocalRepository {
             }
         });
 
+    }
+
+    public DataSource.Factory<Integer, Favorite> getAllFavorites(int type)
+    {
+        return mFavoriteDao.getFavoritesPaging(type);
+    }
+
+    public void insert(final Favorite favorite)
+    {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mFavoriteDao.insertFavoritePaging(favorite);
+            }
+        });
+    }
+
+    public void delete(final int type, final int thingsId)
+    {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mFavoriteDao.deleteFavoritePaging(type, thingsId);
+            }
+        });
     }
 }

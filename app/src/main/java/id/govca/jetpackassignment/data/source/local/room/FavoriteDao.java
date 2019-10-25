@@ -1,6 +1,7 @@
 package id.govca.jetpackassignment.data.source.local.room;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -28,5 +29,15 @@ public interface FavoriteDao {
 
     @Query("DELETE FROM favorite WHERE type = :type AND thingsId = :thingsId")
     int deleteFavorite(int type, int thingsId);
+
+    @Transaction
+    @Query("SELECT * FROM favorite where type = :type")
+    DataSource.Factory<Integer, Favorite> getFavoritesPaging(int type);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertFavoritePaging(Favorite favorite);
+
+    @Query("DELETE FROM favorite WHERE type = :type AND thingsId = :thingsId")
+    void deleteFavoritePaging(int type, int thingsId);
 
 }

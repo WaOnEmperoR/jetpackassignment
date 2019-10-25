@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import java.util.ArrayList;
@@ -321,5 +322,19 @@ public class MovieRepository implements MovieDataSource {
 
     public LiveData<PagedList<TVShow>> getTVShowsPaged(String language){
         return remoteRepository.getTVShowListLiveData(language);
+    }
+
+    public LiveData<PagedList<Favorite>> getFavoritesPaged(int type){
+        return new LivePagedListBuilder<>(localRepository.getAllFavorites(type), 20).build();
+    }
+
+    public void deleteFavoritePaged(int type, int idThings)
+    {
+        localRepository.delete(type, idThings);
+    }
+
+    public void insertFavoritePaged(Favorite favorite)
+    {
+        localRepository.insert(favorite);
     }
 }
