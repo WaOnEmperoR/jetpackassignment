@@ -134,6 +134,7 @@ public class MovieFragment extends Fragment {
                             Intent intent = new Intent(getActivity(), DetailActivity.class);
                             intent.putExtra("Movie_ID", data.getId());
                             intent.putExtra("Category", 0);
+                            intent.putExtra("ShowFav", true);
                             startActivity(intent);
                         }
                     });

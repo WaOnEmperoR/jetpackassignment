@@ -11,10 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import id.govca.jetpackassignment.R;
+import id.govca.jetpackassignment.fragment.FavoriteFragment;
 import id.govca.jetpackassignment.fragment.MovieFragment;
 import id.govca.jetpackassignment.fragment.TVShowFragment;
+import id.govca.jetpackassignment.fragment.favorite.FavoriteMovieFragment;
+import id.govca.jetpackassignment.fragment.favorite.FavoriteTVShowFragment;
 
-public class SingleFragmentActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener {
+public class SingleFragmentActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener, FavoriteFragment.OnFragmentInteractionListener, FavoriteMovieFragment.OnFragmentInteractionListener, FavoriteTVShowFragment.OnFragmentInteractionListener {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

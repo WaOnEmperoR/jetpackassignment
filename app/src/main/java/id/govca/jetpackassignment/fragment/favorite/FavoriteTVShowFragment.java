@@ -1,6 +1,7 @@
 package id.govca.jetpackassignment.fragment.favorite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 
 import java.util.Locale;
 
+import id.govca.jetpackassignment.DetailActivity;
 import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.adapter.ListFavoriteAdapter;
@@ -90,15 +92,15 @@ public class FavoriteTVShowFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mProgressView = view.findViewById(R.id.progressBarFavoriteMovie);
-        rvMovies = view.findViewById(R.id.recyclerView_favorite_movie);
+        mProgressView = view.findViewById(R.id.progressBarFavoriteTVShow);
+        rvMovies = view.findViewById(R.id.recyclerView_favorite_tvshow);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_favorite_movie, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorite_tvshow, container, false);
         return view;
     }
 
@@ -118,6 +120,19 @@ public class FavoriteTVShowFragment extends Fragment {
             favoriteListViewModel.getAllFavorites(1).observe(this, favorites -> {
                 showLoading(false);
                 listFavoriteAdapter.submitList(favorites);
+
+                listFavoriteAdapter.setOnItemClickCallback(new ListFavoriteAdapter.OnItemClickCallback() {
+                    @Override
+                    public void onItemClicked(Favorite data) {
+                        Log.d(TAG, String.valueOf(data.getFavId()));
+
+                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+                        intent.putExtra("Movie_ID", data.getThingsId());
+                        intent.putExtra("Category", 1);
+                        intent.putExtra("ShowFav", false);
+                        startActivity(intent);
+                    }
+                });
 
                 if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
                     EspressoIdlingResource.decrement();

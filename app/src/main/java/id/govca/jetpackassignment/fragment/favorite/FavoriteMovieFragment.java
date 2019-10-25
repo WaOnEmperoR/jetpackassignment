@@ -123,6 +123,19 @@ public class FavoriteMovieFragment extends Fragment {
                 showLoading(false);
                 listFavoriteAdapter.submitList(favorites);
 
+                listFavoriteAdapter.setOnItemClickCallback(new ListFavoriteAdapter.OnItemClickCallback() {
+                    @Override
+                    public void onItemClicked(Favorite data) {
+                        Log.d(TAG, String.valueOf(data.getFavId()));
+
+                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+                        intent.putExtra("Movie_ID", data.getThingsId());
+                        intent.putExtra("Category", 0);
+                        intent.putExtra("ShowFav", false);
+                        startActivity(intent);
+                    }
+                });
+
                 if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
                     EspressoIdlingResource.decrement();
                 }

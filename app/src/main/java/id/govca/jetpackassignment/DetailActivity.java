@@ -101,6 +101,14 @@ public class DetailActivity extends AppCompatActivity {
         favoriteSwitch = findViewById(R.id.switch_favorite);
         context = this;
 
+        if (b.getBoolean("ShowFav")){
+            favoriteSwitch.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            favoriteSwitch.setVisibility(View.GONE);
+        }
+
         if (category == 0)
         {
             EspressoIdlingResource.increment();

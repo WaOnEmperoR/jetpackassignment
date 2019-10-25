@@ -1,8 +1,6 @@
 package id.govca.jetpackassignment.viewmodel;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -13,35 +11,21 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
-
 import id.govca.jetpackassignment.data.source.MovieRepository;
+import id.govca.jetpackassignment.data.source.local.entity.Favorite;
 import id.govca.jetpackassignment.pojo.Movie;
-import id.govca.jetpackassignment.pojo.MovieList;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.schedulers.Schedulers;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class MovieListViewModelTest {
-    private MovieListViewModel movieListViewModel;
-    private MovieListViewModel movieListViewModelPaged;
-
+public class FavoriteListViewModelTest {
+    private FavoriteListViewModel favoriteListViewModelPaged;
     private MovieRepository movieRepository = mock(MovieRepository.class);
-
-    @Mock
-    Observer<MovieList> observer;
-    @Mock
-    LifecycleOwner lifecycleOwner;
-    Lifecycle lifecycle;
 
     @BeforeClass
     public static void setUpClass() {
@@ -65,39 +49,39 @@ public class MovieListViewModelTest {
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
-        lifecycle = new LifecycleRegistry(lifecycleOwner);
-        movieListViewModel = new MovieListViewModel();
-        movieListViewModel.getListMovies().observeForever(observer);
 
-        movieListViewModelPaged = new MovieListViewModel(movieRepository);
+        favoriteListViewModelPaged = new FavoriteListViewModel(movieRepository);
     }
 
     @Test
-    public void testAPICall() {
-        movieListViewModel.fetchMovieList();
-        ArgumentCaptor<MovieList> movieListCaptor = ArgumentCaptor.forClass(MovieList.class);
+    public void testPaginationFavoriteMovie(){
+        MutableLiveData<PagedList<Favorite>> dummyFavorites = new MutableLiveData<>();
+        PagedList<Favorite> pagedList = mock(PagedList.class);
 
-        verify(observer, times(1)).onChanged(movieListCaptor.capture());
+        dummyFavorites.setValue(pagedList);
 
-        List<MovieList> capturedMovieList = movieListCaptor.getAllValues();
-        assertNotNull(capturedMovieList.get(0).getMovieArrayList());
-        assertEquals(capturedMovieList.get(0).getMovieArrayList().size(), 20);
-    }
+        when(movieRepository.getFavoritesPaged(0)).thenReturn(dummyFavorites);
 
-    @Test
-    public void testPagination(){
-        MutableLiveData<PagedList<Movie>> dummyMovies = new MutableLiveData<>();
-        PagedList<Movie> pagedList = mock(PagedList.class);
+        Observer<PagedList<Favorite>> observer = mock(Observer.class);
 
-        dummyMovies.setValue(pagedList);
-
-        when(movieRepository.getMoviesPaged("en-US")).thenReturn(dummyMovies);
-
-        Observer<PagedList<Movie>> observer = mock(Observer.class);
-
-        movieListViewModelPaged.getPagedListMoviesLiveData("en-US").observeForever(observer);
+        favoriteListViewModelPaged.getAllFavorites(0).observeForever(observer);
 
         verify(observer).onChanged(pagedList);
     }
 
+    @Test
+    public void testPaginationFavoriteTVShow(){
+        MutableLiveData<PagedList<Favorite>> dummyFavorites = new MutableLiveData<>();
+        PagedList<Favorite> pagedList = mock(PagedList.class);
+
+        dummyFavorites.setValue(pagedList);
+
+        when(movieRepository.getFavoritesPaged(1)).thenReturn(dummyFavorites);
+
+        Observer<PagedList<Favorite>> observer = mock(Observer.class);
+
+        favoriteListViewModelPaged.getAllFavorites(1).observeForever(observer);
+
+        verify(observer).onChanged(pagedList);
+    }
 }

@@ -325,7 +325,7 @@ public class MovieRepository implements MovieDataSource {
     }
 
     public LiveData<PagedList<Favorite>> getFavoritesPaged(int type){
-        return new LivePagedListBuilder<>(localRepository.getAllFavorites(type), 20).build();
+        return new LivePagedListBuilder<>(localRepository.getAllFavorites(type), 5).build();
     }
 
     public void deleteFavoritePaged(int type, int idThings)

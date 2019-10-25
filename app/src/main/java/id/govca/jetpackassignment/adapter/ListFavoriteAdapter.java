@@ -98,7 +98,7 @@ public class ListFavoriteAdapter extends PagedListAdapter<Favorite, ListFavorite
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickCallback.onItemClicked(listFavorite.get(holder.getAdapterPosition()));
+                onItemClickCallback.onItemClicked(favorite);
             }
         });
     }

@@ -136,6 +136,7 @@ public class TVShowFragment extends Fragment {
                             Intent intent = new Intent(getActivity(), DetailActivity.class);
                             intent.putExtra("Movie_ID", data.getId());
                             intent.putExtra("Category", 1);
+                            intent.putExtra("ShowFav", true);
                             startActivity(intent);
                         }
                     });

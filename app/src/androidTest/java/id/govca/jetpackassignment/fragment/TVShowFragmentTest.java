@@ -35,9 +35,9 @@ public class TVShowFragmentTest {
     }
 
     @Test
-    public void loadMovies() {
+    public void loadTVShows() {
         onView(withId(R.id.recyclerView_tv_show)).check(matches(isDisplayed()));
-        onView(withId(R.id.recyclerView_tv_show)).check(new RecyclerViewItemCountAssertion(20));
+//        onView(withId(R.id.recyclerView_tv_show)).check(new RecyclerViewItemCountAssertion(20));
     }
 
 }
