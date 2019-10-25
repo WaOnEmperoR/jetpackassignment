@@ -8,8 +8,6 @@ import id.govca.jetpackassignment.pojo.TVShow;
 public class DummyData {
 
     public DummyData(){
-        Movie movie = new Movie();
-        movie.setOverview("Haha");
     }
 
     public static ArrayList<Movie> generateDummyMovies()

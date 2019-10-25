@@ -4,7 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.paging.PagedList;
+import androidx.paging.PagedListAdapter;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,16 +20,23 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
+import id.govca.jetpackassignment.data.source.MovieRepository;
+import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieList;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class MovieListViewModelTest {
     private MovieListViewModel movieListViewModel;
+    private MovieListViewModel movieListViewModelPaged;
+
+    private MovieRepository movieRepository = mock(MovieRepository.class);
 
     @Mock
     Observer<MovieList> observer;
@@ -59,10 +69,12 @@ public class MovieListViewModelTest {
         lifecycle = new LifecycleRegistry(lifecycleOwner);
         movieListViewModel = new MovieListViewModel();
         movieListViewModel.getListMovies().observeForever(observer);
+
+        movieListViewModelPaged = new MovieListViewModel(movieRepository);
     }
 
     @Test
-    public void testNull() {
+    public void testAPICall() {
         movieListViewModel.fetchMovieList();
         ArgumentCaptor<MovieList> movieListCaptor = ArgumentCaptor.forClass(MovieList.class);
 
@@ -71,6 +83,22 @@ public class MovieListViewModelTest {
         List<MovieList> capturedMovieList = movieListCaptor.getAllValues();
         assertNotNull(capturedMovieList.get(0).getMovieArrayList());
         assertEquals(capturedMovieList.get(0).getMovieArrayList().size(), 20);
+    }
+
+    @Test
+    public void testPagination(){
+        MutableLiveData<PagedList<Movie>> dummyMovies = new MutableLiveData<>();
+        PagedList<Movie> pagedList = mock(PagedList.class);
+
+        dummyMovies.setValue(pagedList);
+
+        when(movieRepository.getMoviesPaged("en-US")).thenReturn(dummyMovies);
+
+        Observer<PagedList<Movie>> observer = mock(Observer.class);
+
+        movieListViewModelPaged.getPagedListMoviesLiveData("en-US").observeForever(observer);
+
+        verify(observer).onChanged(pagedList);
     }
 
 }
