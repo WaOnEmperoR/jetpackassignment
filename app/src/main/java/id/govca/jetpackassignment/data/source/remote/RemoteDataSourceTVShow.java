@@ -7,6 +7,7 @@ import androidx.paging.PageKeyedDataSource;
 
 import java.util.ArrayList;
 
+import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.TVShow;
 import id.govca.jetpackassignment.pojo.TVShowList;
@@ -34,6 +35,8 @@ public class RemoteDataSourceTVShow extends PageKeyedDataSource<Integer, TVShow>
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, TVShow> callback) {
+        EspressoIdlingResource.increment();
+
         mApiInterface.RxGetTVShowList(Constants.API_KEY, language, FIRST_PAGE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -57,6 +60,10 @@ public class RemoteDataSourceTVShow extends PageKeyedDataSource<Integer, TVShow>
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onComplete");
+                        if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                            Log.d(TAG, "espresso");
+                            EspressoIdlingResource.decrement();
+                        }
                     }
                 });
     }
@@ -122,6 +129,10 @@ public class RemoteDataSourceTVShow extends PageKeyedDataSource<Integer, TVShow>
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onComplete");
+                        if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                            Log.d(TAG, "espresso");
+                            EspressoIdlingResource.decrement();
+                        }
                     }
                 });
     }

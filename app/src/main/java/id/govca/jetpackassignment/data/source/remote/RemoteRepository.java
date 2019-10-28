@@ -50,9 +50,8 @@ public class RemoteRepository {
         return mApiInterface.RxTVShowDetails(id_tv_show, Constants.API_KEY, language);
     }
 
-    public LiveData<PagedList<Movie>> getMovieListLiveData(String language, RemoteDataSourceMovieFactory remoteDataSourceMovieFactory){
-//        RemoteDataSourceMovieFactory rmFactory = new RemoteDataSourceMovieFactory(language);
-        remoteDataSourceMovieFactory.setLanguage(language);
+    public LiveData<PagedList<Movie>> getMovieListLiveData(String language){
+        RemoteDataSourceMovieFactory remoteDataSourceMovieFactory = new RemoteDataSourceMovieFactory(language);
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)

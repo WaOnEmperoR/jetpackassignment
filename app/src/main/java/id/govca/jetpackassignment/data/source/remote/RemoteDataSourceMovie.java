@@ -8,6 +8,7 @@ import androidx.paging.PageKeyedDataSource;
 
 import java.util.ArrayList;
 
+import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.data.source.MovieRepository;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieList;
@@ -26,28 +27,20 @@ public class RemoteDataSourceMovie extends PageKeyedDataSource<Integer, Movie> {
     private static final int FIRST_PAGE = 1;
 
     private final String language;
-    private final MovieRepository movieRepository;
 
     private final String TAG = this.getClass().getSimpleName();
-    private MutableLiveData<String> progressLiveStatus = new MutableLiveData<String>();
 
-    public RemoteDataSourceMovie(String mLanguage, MovieRepository movieRepository){
+    public RemoteDataSourceMovie(String mLanguage){
         this.language = mLanguage;
-        this.movieRepository = movieRepository;
-    }
-
-    public MutableLiveData<String> getProgressLiveStatus() {
-        return progressLiveStatus;
     }
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Movie> callback) {
+        EspressoIdlingResource.increment();
+
         mApiInterface.RxGetMovieList(Constants.API_KEY, language, FIRST_PAGE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> {
-                    progressLiveStatus.postValue(Constants.LOADING);
-                })
                 .map(new Function<MovieList, ArrayList<Movie>>() {
                     @Override
                     public ArrayList<Movie> apply(MovieList movieList) throws Exception {
@@ -62,14 +55,22 @@ public class RemoteDataSourceMovie extends PageKeyedDataSource<Integer, Movie> {
 
                     @Override
                     public void onError(Throwable e) {
-                        progressLiveStatus.postValue(Constants.LOADED);
                         Log.e(TAG, e.getMessage());
+
+                        if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                            Log.d(TAG, "espresso");
+                            EspressoIdlingResource.decrement();
+                        }
                     }
 
                     @Override
                     public void onComplete() {
-                        progressLiveStatus.postValue(Constants.LOADED);
                         Log.d(TAG, "onComplete");
+
+                        if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                            Log.d(TAG, "espresso");
+                            EspressoIdlingResource.decrement();
+                        }
                     }
                 });
     }
@@ -79,9 +80,6 @@ public class RemoteDataSourceMovie extends PageKeyedDataSource<Integer, Movie> {
         mApiInterface.RxGetMovieList(Constants.API_KEY, language, params.key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> {
-                    progressLiveStatus.postValue(Constants.LOADING);
-                })
                 .map(new Function<MovieList, ArrayList<Movie>>() {
                     @Override
                     public ArrayList<Movie> apply(MovieList movieList) throws Exception {
@@ -98,13 +96,11 @@ public class RemoteDataSourceMovie extends PageKeyedDataSource<Integer, Movie> {
 
                     @Override
                     public void onError(Throwable e) {
-                        progressLiveStatus.postValue(Constants.LOADED);
                         Log.e(TAG, e.getMessage());
                     }
 
                     @Override
                     public void onComplete() {
-                        progressLiveStatus.postValue(Constants.LOADED);
                         Log.d(TAG, "onComplete");
                     }
                 });
@@ -115,9 +111,6 @@ public class RemoteDataSourceMovie extends PageKeyedDataSource<Integer, Movie> {
         mApiInterface.RxGetMovieList(Constants.API_KEY, language, params.key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> {
-                    progressLiveStatus.postValue(Constants.LOADING);
-                })
                 .map(new Function<MovieList, ArrayList<Movie>>() {
                     @Override
                     public ArrayList<Movie> apply(MovieList movieList) throws Exception {
@@ -137,13 +130,11 @@ public class RemoteDataSourceMovie extends PageKeyedDataSource<Integer, Movie> {
 
                     @Override
                     public void onError(Throwable e) {
-                        progressLiveStatus.postValue(Constants.LOADED);
                         Log.e(TAG, e.getMessage());
                     }
 
                     @Override
                     public void onComplete() {
-                        progressLiveStatus.postValue(Constants.LOADED);
                         Log.d(TAG, "onComplete");
                     }
                 });

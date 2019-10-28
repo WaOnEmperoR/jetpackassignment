@@ -9,23 +9,22 @@ import id.govca.jetpackassignment.pojo.Movie;
 
 public class RemoteDataSourceMovieFactory extends DataSource.Factory {
 
-    private String language = "en-US";
-    private final MovieRepository movieRepository;
+    private final String language;
 
     private final String TAG = this.getClass().getSimpleName();
 
     //creating the mutable live data
     private MutableLiveData<RemoteDataSourceMovie> movieLiveDataSource = new MutableLiveData<>();
 
-    public RemoteDataSourceMovieFactory(MovieRepository movieRepository){
-        this.movieRepository = movieRepository;
+    public RemoteDataSourceMovieFactory(String language){
+        this.language = language;
     }
 
     @NonNull
     @Override
     public DataSource<Integer, Movie> create() {
         //getting our data source object
-        RemoteDataSourceMovie remoteDataSourceMovie = new RemoteDataSourceMovie(getLanguage(), movieRepository);
+        RemoteDataSourceMovie remoteDataSourceMovie = new RemoteDataSourceMovie(language);
 
         //posting the datasource to get the values
         movieLiveDataSource.postValue(remoteDataSourceMovie);
@@ -38,11 +37,4 @@ public class RemoteDataSourceMovieFactory extends DataSource.Factory {
         return movieLiveDataSource;
     }
 
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
 }

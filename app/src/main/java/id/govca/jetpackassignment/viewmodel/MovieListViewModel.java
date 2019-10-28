@@ -34,8 +34,6 @@ public class MovieListViewModel extends ViewModel {
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
     private MovieRepository movieRepository;
-    private RemoteDataSourceMovieFactory remoteDataSourceMovieFactory;
-    private LiveData<String> progressLoadStatus = new MutableLiveData<>();
 
     Context context = GlobalApplication.getAppContext();
 
@@ -47,28 +45,18 @@ public class MovieListViewModel extends ViewModel {
     {
     }
 
+    public MovieListViewModel(MovieRepository movieRepository)
+    {
+        this.movieRepository = movieRepository;
+    }
+
     public LiveData<List<Movie>> getListMoviesLiveData(String param_lang){
         return movieRepository.getAllMovies(param_lang);
 
     }
 
     public LiveData<PagedList<Movie>> getPagedListMoviesLiveData(String language){
-        progressLoadStatus = Transformations.switchMap(remoteDataSourceMovieFactory.getMovieLiveDataSource(), RemoteDataSourceMovie::getProgressLiveStatus);
-
-        return movieRepository.getMoviesPaged(language, remoteDataSourceMovieFactory);
-    }
-
-    public LiveData<String> getProgressLoadStatus() {
-        return progressLoadStatus;
-    }
-
-    public MovieListViewModel(MovieRepository movieRepository)
-    {
-        this.movieRepository = movieRepository;
-        this.remoteDataSourceMovieFactory = new RemoteDataSourceMovieFactory(this.movieRepository);
-
-//        movieRepository.getMoviesPaged(language, this.remoteDataSourceMovieFactory);
-
+        return movieRepository.getMoviesPaged(language);
     }
 
     public void setListMovies(String param_lang) {

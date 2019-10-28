@@ -107,8 +107,7 @@ public class MovieFragment extends Fragment {
 
         if (getActivity()!=null)
         {
-            EspressoIdlingResource.increment();
-
+            showLoading(true);
             movieListViewModel = obtainViewModel(getActivity());
             listMovieAdapter = new ListMovieAdapter();
 
@@ -120,28 +119,10 @@ public class MovieFragment extends Fragment {
                 param_lang = "id-ID";
             }
 
-            movieListViewModel.getProgressLoadStatus().observe(this, s -> {
-                if (Objects.requireNonNull(s).equalsIgnoreCase(Constants.LOADING)) {
-                    showLoading(true);
-                } else if (s.equalsIgnoreCase(Constants.LOADED)) {
-                    showLoading(false);
-
-                    boolean b = EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow();
-
-                    String status = b ? "True" : "False";
-
-                    Log.d(TAG, status);
-                    EspressoIdlingResource.decrement();
-//                    if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
-//                        Log.d(TAG, "espresso");
-//                        EspressoIdlingResource.decrement();
-//                    }
-                }
-            });
             movieListViewModel.getPagedListMoviesLiveData(param_lang).observe(this, new Observer<PagedList<Movie>>() {
-
                 @Override
                 public void onChanged(PagedList<Movie> movies) {
+                    showLoading(false);
                     listMovieAdapter.submitList(movies);
 
                     listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
@@ -156,6 +137,8 @@ public class MovieFragment extends Fragment {
                             startActivity(intent);
                         }
                     });
+
+
                 }
             });
 

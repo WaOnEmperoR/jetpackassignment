@@ -186,6 +186,7 @@ public class MovieRepository implements MovieDataSource {
     @Override
     public LiveData<List<Favorite>> getFavorites(int type) {
         MutableLiveData<List<Favorite>> favoritesMutableLiveData = new MutableLiveData<>();
+        EspressoIdlingResource.increment();
 
         localRepository.getFavorites(type)
                 .subscribeOn(Schedulers.io())
@@ -199,11 +200,19 @@ public class MovieRepository implements MovieDataSource {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, e.getMessage());
+                        if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                            Log.d(TAG, "espresso");
+                            EspressoIdlingResource.decrement();
+                        }
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onComplete");
+                        if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+                            Log.d(TAG, "espresso");
+                            EspressoIdlingResource.decrement();
+                        }
                     }
                 });
 
@@ -318,8 +327,8 @@ public class MovieRepository implements MovieDataSource {
         return favoriteMutableLiveData;
     }
 
-    public LiveData<PagedList<Movie>> getMoviesPaged(String language, RemoteDataSourceMovieFactory remoteDataSourceMovieFactory){
-        LiveData<PagedList<Movie>> ret_movies = remoteRepository.getMovieListLiveData(language, remoteDataSourceMovieFactory);
+    public LiveData<PagedList<Movie>> getMoviesPaged(String language){
+        LiveData<PagedList<Movie>> ret_movies = remoteRepository.getMovieListLiveData(language);
         return ret_movies;
     }
 
