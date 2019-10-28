@@ -37,7 +37,12 @@ public class TVShowFragmentTest {
     @Test
     public void loadTVShows() {
         onView(withId(R.id.recyclerView_tv_show)).check(matches(isDisplayed()));
-//        onView(withId(R.id.recyclerView_tv_show)).check(new RecyclerViewItemCountAssertion(20));
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onView(withId(R.id.recyclerView_tv_show)).check(new RecyclerViewItemCountAssertion(20));
     }
 
 }

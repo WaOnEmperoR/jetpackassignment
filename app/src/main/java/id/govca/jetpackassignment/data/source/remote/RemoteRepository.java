@@ -1,6 +1,8 @@
 package id.govca.jetpackassignment.data.source.remote;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
@@ -18,6 +20,8 @@ import id.govca.jetpackassignment.rest.Constants;
 public class RemoteRepository {
     private static RemoteRepository INSTANCE;
     private ApiInterface mApiInterface;
+
+    private LiveData<String> progressLoadStatus = new MutableLiveData<>();
 
     private RemoteRepository(ApiInterface apiInterface){
         mApiInterface = apiInterface;
@@ -46,12 +50,15 @@ public class RemoteRepository {
         return mApiInterface.RxTVShowDetails(id_tv_show, Constants.API_KEY, language);
     }
 
-    public LiveData<PagedList<Movie>> getMovieListLiveData(String language){
-        RemoteDataSourceMovieFactory remoteDataSourceMovieFactory = new RemoteDataSourceMovieFactory(language);
+    public LiveData<PagedList<Movie>> getMovieListLiveData(String language, RemoteDataSourceMovieFactory remoteDataSourceMovieFactory){
+//        RemoteDataSourceMovieFactory rmFactory = new RemoteDataSourceMovieFactory(language);
+        remoteDataSourceMovieFactory.setLanguage(language);
+
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
                 .setPageSize(5)
                 .build();
+
         return new LivePagedListBuilder<>(remoteDataSourceMovieFactory, config).build();
     }
 

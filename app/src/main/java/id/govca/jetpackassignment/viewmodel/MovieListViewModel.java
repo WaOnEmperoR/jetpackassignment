@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import androidx.paging.PagedList;
 
@@ -14,6 +15,8 @@ import java.util.List;
 
 import id.govca.jetpackassignment.GlobalApplication;
 import id.govca.jetpackassignment.data.source.MovieRepository;
+import id.govca.jetpackassignment.data.source.remote.RemoteDataSourceMovie;
+import id.govca.jetpackassignment.data.source.remote.RemoteDataSourceMovieFactory;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieList;
 import id.govca.jetpackassignment.rest.ApiClient;
@@ -31,6 +34,8 @@ public class MovieListViewModel extends ViewModel {
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
     private MovieRepository movieRepository;
+    private RemoteDataSourceMovieFactory remoteDataSourceMovieFactory;
+    private LiveData<String> progressLoadStatus = new MutableLiveData<>();
 
     Context context = GlobalApplication.getAppContext();
 
@@ -48,13 +53,22 @@ public class MovieListViewModel extends ViewModel {
     }
 
     public LiveData<PagedList<Movie>> getPagedListMoviesLiveData(String language){
-        return movieRepository.getMoviesPaged(language);
+        progressLoadStatus = Transformations.switchMap(remoteDataSourceMovieFactory.getMovieLiveDataSource(), RemoteDataSourceMovie::getProgressLiveStatus);
+
+        return movieRepository.getMoviesPaged(language, remoteDataSourceMovieFactory);
     }
 
+    public LiveData<String> getProgressLoadStatus() {
+        return progressLoadStatus;
+    }
 
     public MovieListViewModel(MovieRepository movieRepository)
     {
         this.movieRepository = movieRepository;
+        this.remoteDataSourceMovieFactory = new RemoteDataSourceMovieFactory(this.movieRepository);
+
+//        movieRepository.getMoviesPaged(language, this.remoteDataSourceMovieFactory);
+
     }
 
     public void setListMovies(String param_lang) {

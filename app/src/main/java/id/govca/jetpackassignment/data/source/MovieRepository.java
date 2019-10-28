@@ -11,8 +11,10 @@ import androidx.paging.PagedList;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.data.source.local.LocalRepository;
 import id.govca.jetpackassignment.data.source.local.entity.Favorite;
+import id.govca.jetpackassignment.data.source.remote.RemoteDataSourceMovieFactory;
 import id.govca.jetpackassignment.data.source.remote.RemoteRepository;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieDetail;
@@ -316,8 +318,9 @@ public class MovieRepository implements MovieDataSource {
         return favoriteMutableLiveData;
     }
 
-    public LiveData<PagedList<Movie>> getMoviesPaged(String language){
-        return remoteRepository.getMovieListLiveData(language);
+    public LiveData<PagedList<Movie>> getMoviesPaged(String language, RemoteDataSourceMovieFactory remoteDataSourceMovieFactory){
+        LiveData<PagedList<Movie>> ret_movies = remoteRepository.getMovieListLiveData(language, remoteDataSourceMovieFactory);
+        return ret_movies;
     }
 
     public LiveData<PagedList<TVShow>> getTVShowsPaged(String language){

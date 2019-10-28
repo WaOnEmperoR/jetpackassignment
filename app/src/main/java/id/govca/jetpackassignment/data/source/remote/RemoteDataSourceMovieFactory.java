@@ -3,26 +3,29 @@ package id.govca.jetpackassignment.data.source.remote;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
-import androidx.paging.PageKeyedDataSource;
 
+import id.govca.jetpackassignment.data.source.MovieRepository;
 import id.govca.jetpackassignment.pojo.Movie;
 
 public class RemoteDataSourceMovieFactory extends DataSource.Factory {
 
-    private final String language;
+    private String language = "en-US";
+    private final MovieRepository movieRepository;
+
+    private final String TAG = this.getClass().getSimpleName();
 
     //creating the mutable live data
-    private MutableLiveData<PageKeyedDataSource<Integer, Movie>> movieLiveDataSource = new MutableLiveData<>();
+    private MutableLiveData<RemoteDataSourceMovie> movieLiveDataSource = new MutableLiveData<>();
 
-    public RemoteDataSourceMovieFactory(String mLanguage){
-        language = mLanguage;
+    public RemoteDataSourceMovieFactory(MovieRepository movieRepository){
+        this.movieRepository = movieRepository;
     }
 
     @NonNull
     @Override
     public DataSource<Integer, Movie> create() {
         //getting our data source object
-        RemoteDataSourceMovie remoteDataSourceMovie = new RemoteDataSourceMovie(language);
+        RemoteDataSourceMovie remoteDataSourceMovie = new RemoteDataSourceMovie(getLanguage(), movieRepository);
 
         //posting the datasource to get the values
         movieLiveDataSource.postValue(remoteDataSourceMovie);
@@ -31,7 +34,15 @@ public class RemoteDataSourceMovieFactory extends DataSource.Factory {
     }
 
     //getter for itemlivedatasource
-    public MutableLiveData<PageKeyedDataSource<Integer, Movie>> getMovieLiveDataSource() {
+    public MutableLiveData<RemoteDataSourceMovie> getMovieLiveDataSource() {
         return movieLiveDataSource;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

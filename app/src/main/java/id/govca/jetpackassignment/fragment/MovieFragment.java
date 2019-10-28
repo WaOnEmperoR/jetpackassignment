@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import id.govca.jetpackassignment.DetailActivity;
 import id.govca.jetpackassignment.EspressoIdlingResource;
@@ -28,6 +29,7 @@ import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.adapter.ListMovieAdapter;
 import id.govca.jetpackassignment.pojo.Movie;
 import id.govca.jetpackassignment.pojo.MovieList;
+import id.govca.jetpackassignment.rest.Constants;
 import id.govca.jetpackassignment.viewmodel.MovieListViewModel;
 import id.govca.jetpackassignment.viewmodel.ViewModelFactory;
 
@@ -103,11 +105,9 @@ public class MovieFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        EspressoIdlingResource.increment();
-
         if (getActivity()!=null)
         {
-            showLoading(true);
+            EspressoIdlingResource.increment();
 
             movieListViewModel = obtainViewModel(getActivity());
             listMovieAdapter = new ListMovieAdapter();
@@ -120,10 +120,28 @@ public class MovieFragment extends Fragment {
                 param_lang = "id-ID";
             }
 
+            movieListViewModel.getProgressLoadStatus().observe(this, s -> {
+                if (Objects.requireNonNull(s).equalsIgnoreCase(Constants.LOADING)) {
+                    showLoading(true);
+                } else if (s.equalsIgnoreCase(Constants.LOADED)) {
+                    showLoading(false);
+
+                    boolean b = EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow();
+
+                    String status = b ? "True" : "False";
+
+                    Log.d(TAG, status);
+                    EspressoIdlingResource.decrement();
+//                    if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
+//                        Log.d(TAG, "espresso");
+//                        EspressoIdlingResource.decrement();
+//                    }
+                }
+            });
             movieListViewModel.getPagedListMoviesLiveData(param_lang).observe(this, new Observer<PagedList<Movie>>() {
+
                 @Override
                 public void onChanged(PagedList<Movie> movies) {
-                    showLoading(false);
                     listMovieAdapter.submitList(movies);
 
                     listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
@@ -138,10 +156,6 @@ public class MovieFragment extends Fragment {
                             startActivity(intent);
                         }
                     });
-
-                    if (!EspressoIdlingResource.getEspressoIdlingResourcey().isIdleNow()) {
-                        EspressoIdlingResource.decrement();
-                    }
                 }
             });
 
