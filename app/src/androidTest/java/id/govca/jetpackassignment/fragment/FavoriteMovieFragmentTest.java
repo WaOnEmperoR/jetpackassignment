@@ -12,6 +12,7 @@ import id.govca.jetpackassignment.EspressoIdlingResource;
 import id.govca.jetpackassignment.R;
 import id.govca.jetpackassignment.fragment.favorite.FavoriteMovieFragment;
 import id.govca.jetpackassignment.testing.SingleFragmentActivity;
+import id.govca.jetpackassignment.utils.RecyclerViewItemCountAssertion;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -37,5 +38,6 @@ public class FavoriteMovieFragmentTest {
     @Test
     public void loadMovies() {
         onView(withId(R.id.recyclerView_favorite_movie)).check(matches(isDisplayed()));
+        onView(withId(R.id.recyclerView_favorite_movie)).check(new RecyclerViewItemCountAssertion(3));
     }
 }
